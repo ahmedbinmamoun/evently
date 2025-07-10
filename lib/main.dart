@@ -1,0 +1,49 @@
+import 'package:event/providers/app_language_provider.dart';
+import 'package:event/providers/app_theme_provider.dart';
+import 'package:event/ui/auth/login/login_screen.dart';
+import 'package:event/ui/auth/register/register_screen.dart';
+import 'package:event/ui/home/home_screen.dart';
+import 'package:event/ui/onboarding/onboarding_screen.dart';
+import 'package:event/ui/onboarding/start_screen.dart';
+import 'package:event/utils/app_routes.dart';
+import 'package:event/utils/app_theme.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+
+void main(){
+  runApp(
+    MultiProvider(providers: [
+      ChangeNotifierProvider(create: (context) => AppLanguageProvider()),
+      ChangeNotifierProvider(create: (context) => AppThemeProvider()),
+    ],
+    child : Myapp()));
+}
+
+class Myapp extends StatelessWidget {
+  const Myapp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    var languageProvider = Provider.of<AppLanguageProvider>(context);
+    var appThemeProvider = Provider.of<AppThemeProvider>(context);
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      initialRoute: AppRoutes.startRouteName,
+      routes: {
+        AppRoutes.homeRouteName : (context) => HomeScreen(),
+        AppRoutes.onboardingRouteName : (context) => OnboardingScreen(),
+        AppRoutes.startRouteName : (context) => StartScreen(),
+        AppRoutes.loginRouteName : (context) => LoginScreen(),
+        AppRoutes.registerRouteName : (context) => RegisterScreen(),
+      },
+      locale: Locale(languageProvider.appLanguage),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: appThemeProvider.appTheme,
+
+    );
+  }
+}
