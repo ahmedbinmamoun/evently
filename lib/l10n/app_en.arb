@@ -30,6 +30,29 @@
     "birthday" : "Birthday",
     "gaming" : "Gaming",
     "book_club" : "Book Club",
-    "search_event" : "Search For Event"
+    "search_event" : "Search For Event",
+    "forget_password" : "Forget Password",
+    "dont_have_account" : "Don’t Have Account ? ",
+    "create_account" : "Create Account",
+    "login_with_google" : "Login With Google",
+    "already_have_account" : "Already Have Account ?",
+    "login" : "Login",
+    "email" : "Email",
+    "password" : "Password",
+    "re_password" : "Re Password",
+    "name" : "Name",
+    "register" : "Register",
+    "reset_password" : "Reset Password",
+    "or" : "Or",
+    "start" : "Start",
+    "password_should_be_at_least" : "Password should be at leaset 6 chars.",
+    "plaese_enter_password" : "Plaese Enter Password",
+    "plaese_enter_re_password" : "Plaese Enter Re-Password",
+    "re_password_doesnt_match" : "Re-password does't match password !",
+    "enter_valid_email" : "Enter Valid Email",
+    "plaese_enter_email" : "Plaese Enter Email",
+    "plaese_enter_name" : "Plaese Enter Name"
+    
+    
 
 }

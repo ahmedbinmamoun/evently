@@ -8,19 +8,21 @@ class AppTheme {
     focusColor: AppColors.whiteColor,
     primaryColor: AppColors.primaryLight,
     shadowColor: AppColors.whiteBgColor,
+    hintColor: AppColors.greyColor,
+    canvasColor: AppColors.blackColor,
+    cardColor: AppColors.greyColor,
     scaffoldBackgroundColor: AppColors.whiteBgColor,
+    highlightColor: AppColors.blackColor,
     textTheme: TextTheme(
       headlineLarge: AppStyle.bold20Black,
       headlineMedium: AppStyle.medium16Primary,
       headlineSmall: AppStyle.medium16White,
       bodyMedium: AppStyle.medium16Black,
+      
     ),
     
     appBarTheme: AppBarTheme(
       backgroundColor: AppColors.primaryLight,
-      
-      
-      
       
     ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
@@ -49,6 +51,10 @@ class AppTheme {
     focusColor: AppColors.primaryLight,
     primaryColor: AppColors.primaryDark,
     shadowColor: AppColors.primaryDark,
+    hintColor: AppColors.whiteColor,
+    canvasColor: AppColors.whiteColor,
+    highlightColor: AppColors.primaryLight,
+    cardColor: AppColors.primaryLight,
     scaffoldBackgroundColor: AppColors.primaryDark,
     textTheme: TextTheme(
       headlineLarge: AppStyle.bold20White,

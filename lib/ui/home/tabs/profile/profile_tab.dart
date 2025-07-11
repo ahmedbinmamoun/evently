@@ -2,6 +2,7 @@ import 'package:event/providers/app_language_provider.dart';
 import 'package:event/providers/app_theme_provider.dart';
 import 'package:event/ui/home/tabs/profile/language/language_bottom_sheet.dart';
 import 'package:event/ui/home/tabs/profile/theme/theme_bottom_sheet.dart';
+import 'package:event/ui/home/widgets/custom_elevated_button.dart';
 import 'package:event/utils/app_assets.dart';
 import 'package:event/utils/app_colors.dart';
 import 'package:event/utils/app_style.dart';
@@ -132,7 +133,23 @@ class _ProfileTabState extends State<ProfileTab> {
               ),
             ),
             Spacer(),
-            // button
+            CustomElevatedButton(
+              onPressed: (){
+                //logout
+              },
+            hasIcon: true,
+            backgroundColor: AppColors.redColor,
+
+            child: Row(
+              children: [
+                SizedBox(width: width * 0.02,),
+                Image.asset(AppAssets.logoutIcon,),
+                SizedBox(width: width * 0.02,),
+                Text(AppLocalizations.of(context)!.logout,style: AppStyle.bold20White,),
+
+              ],
+            ),
+            )
           ],
         ),
       ),

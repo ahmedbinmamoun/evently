@@ -1,5 +1,6 @@
 import 'package:event/providers/app_language_provider.dart';
 import 'package:event/providers/app_theme_provider.dart';
+import 'package:event/ui/home/widgets/custom_elevated_button.dart';
 import 'package:event/ui/onboarding/widgets/image_toggle_switch.dart';
 import 'package:event/utils/app_assets.dart';
 import 'package:event/utils/app_colors.dart';
@@ -80,25 +81,10 @@ class _OnboardingScreenState extends State<StartScreen> {
                 ],
               ),
               SizedBox(height: height * 0.02,),
-              InkWell(
-                onTap: (){
-                  Navigator.pushReplacementNamed(context, AppRoutes.onboardingRouteName);
-                },
-                
-                child: Container(
-                  height: height * 0.04,
-                  width: double.infinity,
-                  margin: EdgeInsets.symmetric(
-                    horizontal: width * 0.02,
-                  ),
-                  padding: EdgeInsets.symmetric(
-                    vertical: height * 0.003
-                  ),
-                  color: AppColors.primaryLight,
-                  child: Text('start',style: AppStyle.bold20White,textAlign: TextAlign.center,),
-                ),
-              )
-              
+
+             CustomElevatedButton(onPressed: (){
+              Navigator.pushReplacementNamed(context, AppRoutes.onboardingRouteName);
+             }, text: AppLocalizations.of(context)!.start),
             ],
           ),
         ),

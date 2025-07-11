@@ -2,6 +2,7 @@ import 'package:event/providers/app_language_provider.dart';
 import 'package:event/providers/app_theme_provider.dart';
 import 'package:event/ui/auth/login/login_screen.dart';
 import 'package:event/ui/auth/register/register_screen.dart';
+import 'package:event/ui/auth/reset_password/reset_password_screen.dart';
 import 'package:event/ui/home/home_screen.dart';
 import 'package:event/ui/onboarding/onboarding_screen.dart';
 import 'package:event/ui/onboarding/start_screen.dart';
@@ -36,6 +37,7 @@ class Myapp extends StatelessWidget {
         AppRoutes.startRouteName : (context) => StartScreen(),
         AppRoutes.loginRouteName : (context) => LoginScreen(),
         AppRoutes.registerRouteName : (context) => RegisterScreen(),
+        AppRoutes.resetPasswordRouteName : (context) => ResetPasswordScreen(),
       },
       locale: Locale(languageProvider.appLanguage),
       localizationsDelegates: AppLocalizations.localizationsDelegates,

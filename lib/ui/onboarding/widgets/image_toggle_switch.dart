@@ -49,7 +49,7 @@ class _ImageToggleSwitchState extends State<ImageToggleSwitch> {
         width: widget.width,
         height: widget.height,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).shadowColor,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: AppColors.primaryLight, width: 2),
         ),

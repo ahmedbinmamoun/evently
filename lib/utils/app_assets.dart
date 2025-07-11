@@ -1,7 +1,9 @@
 class AppAssets {
   
   static const String titleLogo= 'assets/images/app_bar_logo.png';
+  static const String logo= 'assets/images/logo.png';
   static const String beingCreative= 'assets/images/being_creative.png';
+  static const String changeSettingImage= 'assets/images/change_setting_image.png';
   static const String egyptFlag= 'assets/images/egypt.png';
   static const String usaFlag= 'assets/images/usa.png';
   static const String lightIcon= 'assets/images/light_icon.png';
@@ -16,11 +18,15 @@ class AppAssets {
   static const String selectedProfileIcon= 'assets/images/selected_profile_icon.png';
   static const String themeIcon = 'assets/images/theme_icon.png';
   static const String searchIcon = 'assets/images/search_icon.png';
+  static const String googleIcon = 'assets/images/google_icon.png';
   static const String hotTrending= 'assets/images/hot_trending_image.png';
   static const String managerDesk= 'assets/images/manager_desk_image.png';
   static const String socialMedia= 'assets/images/social_media_image.png';
   static const String forwardArrow= 'assets/images/arrow_forward_icon.png';
   static const String prevArrow= 'assets/images/prev_arrow_icon.png';
+  static const String emailIcon= 'assets/images/email_icon.png';
+  static const String logoutIcon= 'assets/images/logout_icon.png';
+  static const String passwordIcon= 'assets/images/password_icon.png';
   static const String profileImage= 'assets/images/profile_image.png';
   static const String birthdayImage= 'assets/images/birthday_image.png';
   

@@ -77,7 +77,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     width: isActive ? width * 0.05 : width * 0.02,
                     height: height * 0.01,
                     decoration: BoxDecoration(
-                      color: isActive ? AppColors.primaryLight : AppColors.blackColor,
+                      color: isActive ? AppColors.primaryLight : Theme.of(context).canvasColor,
                       borderRadius: BorderRadius.circular(5),
                     ),
                   );
@@ -94,7 +94,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       if (currentPage < 2) {
                         introKey.currentState?.next();
                       } else {
-                        Navigator.pushReplacementNamed(context, AppRoutes.homeRouteName);
+                        Navigator.pushReplacementNamed(context, AppRoutes.loginRouteName);
                       }
                     },
                   ),
