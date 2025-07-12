@@ -19,6 +19,7 @@ class CustomTextFormFeild extends StatelessWidget {
   bool obscureText;
   String? obscureCharacter;
   TextStyle? textStyle;
+  int? maxLine;
    CustomTextFormFeild({
     super.key,
     
@@ -35,7 +36,8 @@ class CustomTextFormFeild extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     this.obscureText = false,
     this.obscureCharacter,
-    this.textStyle
+    this.textStyle,
+    this.maxLine
    });
 
   @override
@@ -61,6 +63,7 @@ class CustomTextFormFeild extends StatelessWidget {
       keyboardType: keyboardType,
       obscureText: obscureText,
       obscuringCharacter: obscureCharacter ?? '.',
+      maxLines: maxLine ?? 1,
       
       
       

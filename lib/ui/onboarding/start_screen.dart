@@ -18,6 +18,7 @@ class StartScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<StartScreen> {
+  
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
@@ -72,10 +73,9 @@ class _OnboardingScreenState extends State<StartScreen> {
                   ImageToggleSwitch(
                   firstAsset: AppAssets.lightIcon,
                   secondAsset: AppAssets.darkIcon,
-                  isFirstSelected: true,
+                  isFirstSelected: !(appThemeProvider.isDarkMode()),
                   onToggle: (isFirst) {
-                    
-                    isFirst ? appThemeProvider.changeTheme(ThemeMode.light) : appThemeProvider.changeTheme(ThemeMode.dark);
+                   isFirst ? appThemeProvider.changeTheme(ThemeMode.light) : appThemeProvider.changeTheme(ThemeMode.dark);
                   },
                 ),
                 ],

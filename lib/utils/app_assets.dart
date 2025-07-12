@@ -29,5 +29,19 @@ class AppAssets {
   static const String passwordIcon= 'assets/images/password_icon.png';
   static const String profileImage= 'assets/images/profile_image.png';
   static const String birthdayImage= 'assets/images/birthday_image.png';
+  static const String sportImage= 'assets/images/sport_club.png';
+  static const String meetingImage= 'assets/images/meeting_image.png';
+  static const String gamingImage= 'assets/images/gaming_image.png';
+  static const String workshopImage= 'assets/images/workshope_image.png';
+  static const String bookClubImage= 'assets/images/book_club_image.png';
+  static const String exhibitionImage= 'assets/images/exhibition_image.png';
+  static const String holidayImage= 'assets/images/holiday_image.png';
+  static const String etingImage= 'assets/images/eating_image.png';
+  static const String editIcon= 'assets/images/edit_icon.png';
+  static const String calenderIcon= 'assets/images/calender_icon.png';
+  static const String clockIcon= 'assets/images/clock_icon.png';
+  static const String locationIcon= 'assets/images/location_icon.png';
+
+
   
 }

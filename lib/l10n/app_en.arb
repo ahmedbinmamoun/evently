@@ -51,8 +51,21 @@
     "re_password_doesnt_match" : "Re-password does't match password !",
     "enter_valid_email" : "Enter Valid Email",
     "plaese_enter_email" : "Plaese Enter Email",
-    "plaese_enter_name" : "Plaese Enter Name"
-    
+    "plaese_enter_name" : "Plaese Enter Name",
+    "create_event" : "Creat Event",
+    "title" : "Title",
+    "event_title" : "Event Titile",
+    "event_description" : "Event Description",
+    "description" : "Description",
+    "event_date" : "Event Date",
+    "event_time" : "Event Time",
+    "choose_date" : "Choose Date",
+    "choose_time" : "Choose Time",
+    "location" : "Location",
+    "choose_event_location" : "Choose Event Location",
+    "add_event" : "Add Event",
+    "plaese_enter_event_title" : "Plaese Enter Event Title",
+    "plaese_enter_event_description" : "Plaese Enter Event Description"
     
 
 }

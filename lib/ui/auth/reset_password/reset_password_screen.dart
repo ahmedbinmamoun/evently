@@ -23,6 +23,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     TextEditingController emailController = TextEditingController();
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(
+        color: AppColors.blackColor,
+      ),
         title: Text(AppLocalizations.of(context)!.forget_password,style: AppStyle.medium16Black,),
         centerTitle: true,
         backgroundColor: AppColors.transparentColor,

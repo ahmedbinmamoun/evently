@@ -37,9 +37,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     return Scaffold(
           appBar: AppBar(
+            iconTheme: IconThemeData(
+              color: AppColors.blackColor,
+            ),
             title: Text(AppLocalizations.of(context)!.register,
+            
             style: AppStyle.medium20Black.copyWith(
               color: Theme.of(context).highlightColor,
+
             ),),
             centerTitle: true,
             backgroundColor: AppColors.transparentColor,
@@ -190,7 +195,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   void register() {
     if(formKey.currentState?.validate() == true){
-      Navigator.pushReplacementNamed(context, AppRoutes.homeRouteName);
+      Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.homeRouteName, (route) => false,);
 
     }
 }

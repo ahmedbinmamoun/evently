@@ -3,14 +3,17 @@ import 'package:event/utils/app_style.dart';
 import 'package:flutter/material.dart';
 
 class AppTheme {
-
+  
+ 
   static final ThemeData lightTheme = ThemeData(
+    
     focusColor: AppColors.whiteColor,
     primaryColor: AppColors.primaryLight,
     shadowColor: AppColors.whiteBgColor,
     hintColor: AppColors.greyColor,
     canvasColor: AppColors.blackColor,
     cardColor: AppColors.greyColor,
+    colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryLight),
     scaffoldBackgroundColor: AppColors.whiteBgColor,
     highlightColor: AppColors.blackColor,
     textTheme: TextTheme(
@@ -18,11 +21,15 @@ class AppTheme {
       headlineMedium: AppStyle.medium16Primary,
       headlineSmall: AppStyle.medium16White,
       bodyMedium: AppStyle.medium16Black,
+      titleMedium: AppStyle.medium16Black,
       
     ),
     
     appBarTheme: AppBarTheme(
       backgroundColor: AppColors.primaryLight,
+      iconTheme: IconThemeData(
+        color: AppColors.primaryLight,
+      ),
       
     ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
@@ -61,9 +68,13 @@ class AppTheme {
       headlineMedium: AppStyle.medium16White,
       headlineSmall: AppStyle.medium16White,
       bodyMedium: AppStyle.medium16White,
+      titleMedium: AppStyle.medium16White
     ),
     appBarTheme: AppBarTheme(
-      backgroundColor: AppColors.primaryDark
+      backgroundColor: AppColors.primaryDark,
+      iconTheme: IconThemeData(
+        color: AppColors.primaryLight,
+      ),
     ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: AppColors.primaryDark,
