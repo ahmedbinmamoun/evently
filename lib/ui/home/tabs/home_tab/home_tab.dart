@@ -106,6 +106,9 @@ class _HomeTabState extends State<HomeTab> {
                 },
                 tabs: eventNameList.map((eventName){
                   return EventTabItem(
+                    selectedTextStyle: Theme.of(context).textTheme.headlineMedium!,
+                    unSelectedTextStyle: Theme.of(context).textTheme.headlineSmall!,
+                    selectedColor: Theme.of(context).focusColor,
                     isSelected: selectedIndex == eventNameList.indexOf(eventName),
                    eventName: eventName
                    );

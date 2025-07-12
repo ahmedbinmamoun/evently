@@ -8,11 +8,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FavoriteTab extends StatelessWidget {
    FavoriteTab({super.key});
+   TextEditingController searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
+    
     return SafeArea(
       child: Padding(
         padding:  EdgeInsets.symmetric(
@@ -23,6 +25,7 @@ class FavoriteTab extends StatelessWidget {
         children: [
           SizedBox(height: height * 0.02,),
           CustomTextFormFeild(
+            controller: searchController,
             colorBorderSide: AppColors.primaryLight,
             cursorColor: AppColors.primaryLight,
             hintText: AppLocalizations.of(context)!.search_event,

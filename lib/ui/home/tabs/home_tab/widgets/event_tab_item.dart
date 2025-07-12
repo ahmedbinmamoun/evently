@@ -4,7 +4,18 @@ import 'package:flutter/material.dart';
 class EventTabItem extends StatelessWidget {
   bool isSelected;
   String eventName;   
-   EventTabItem({required this.isSelected,required this.eventName, super.key});
+  Color selectedColor;
+  TextStyle selectedTextStyle;
+  TextStyle unSelectedTextStyle;
+  Color? borderSideColor;
+   EventTabItem({
+    required this.isSelected,
+    required this.eventName,
+    required this.selectedColor,
+    required this.selectedTextStyle,
+    required this.unSelectedTextStyle,
+    this.borderSideColor,
+     super.key});
   
 
   @override
@@ -22,13 +33,13 @@ class EventTabItem extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(46),
         border: Border.all(
-          color: Theme.of(context).focusColor,
+          color: borderSideColor ?? Theme.of(context).focusColor,
           width: 2
         ),
-        color: isSelected ? Theme.of(context).focusColor : AppColors.transparentColor,
+        color: isSelected ? selectedColor : AppColors.transparentColor,
       ),
       child: Text(eventName,
-      style: isSelected ? Theme.of(context).textTheme.headlineMedium : Theme.of(context).textTheme.headlineSmall,
+      style: isSelected ? selectedTextStyle : unSelectedTextStyle,
       ),
     );
   }

@@ -4,6 +4,7 @@ import 'package:event/ui/home/tabs/map/map_tab.dart';
 import 'package:event/ui/home/tabs/profile/profile_tab.dart';
 import 'package:event/utils/app_assets.dart';
 import 'package:event/utils/app_colors.dart';
+import 'package:event/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -64,7 +65,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ]
         ),
-      floatingActionButton: FloatingActionButton(onPressed: (){},
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          Navigator.pushNamed(context, AppRoutes.addEvent);
+        },
       child: Icon(Icons.add,color: AppColors.whiteColor,size: 35,),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

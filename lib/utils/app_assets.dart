@@ -1,7 +1,9 @@
 class AppAssets {
   
   static const String titleLogo= 'assets/images/app_bar_logo.png';
+  static const String logo= 'assets/images/logo.png';
   static const String beingCreative= 'assets/images/being_creative.png';
+  static const String changeSettingImage= 'assets/images/change_setting_image.png';
   static const String egyptFlag= 'assets/images/egypt.png';
   static const String usaFlag= 'assets/images/usa.png';
   static const String lightIcon= 'assets/images/light_icon.png';
@@ -16,12 +18,30 @@ class AppAssets {
   static const String selectedProfileIcon= 'assets/images/selected_profile_icon.png';
   static const String themeIcon = 'assets/images/theme_icon.png';
   static const String searchIcon = 'assets/images/search_icon.png';
+  static const String googleIcon = 'assets/images/google_icon.png';
   static const String hotTrending= 'assets/images/hot_trending_image.png';
   static const String managerDesk= 'assets/images/manager_desk_image.png';
   static const String socialMedia= 'assets/images/social_media_image.png';
   static const String forwardArrow= 'assets/images/arrow_forward_icon.png';
   static const String prevArrow= 'assets/images/prev_arrow_icon.png';
+  static const String emailIcon= 'assets/images/email_icon.png';
+  static const String logoutIcon= 'assets/images/logout_icon.png';
+  static const String passwordIcon= 'assets/images/password_icon.png';
   static const String profileImage= 'assets/images/profile_image.png';
   static const String birthdayImage= 'assets/images/birthday_image.png';
+  static const String sportImage= 'assets/images/sport_club.png';
+  static const String meetingImage= 'assets/images/meeting_image.png';
+  static const String gamingImage= 'assets/images/gaming_image.png';
+  static const String workshopImage= 'assets/images/workshope_image.png';
+  static const String bookClubImage= 'assets/images/book_club_image.png';
+  static const String exhibitionImage= 'assets/images/exhibition_image.png';
+  static const String holidayImage= 'assets/images/holiday_image.png';
+  static const String etingImage= 'assets/images/eating_image.png';
+  static const String editIcon= 'assets/images/edit_icon.png';
+  static const String calenderIcon= 'assets/images/calender_icon.png';
+  static const String clockIcon= 'assets/images/clock_icon.png';
+  static const String locationIcon= 'assets/images/location_icon.png';
+
+
   
 }
