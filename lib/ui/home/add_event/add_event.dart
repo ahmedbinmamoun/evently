@@ -1,3 +1,4 @@
+import 'package:event/model/event.dart';
 import 'package:event/ui/home/add_event/widgets/add_date_or_time_widget.dart';
 import 'package:event/ui/home/tabs/home_tab/widgets/event_tab_item.dart';
 import 'package:event/ui/home/widgets/custom_elevated_button.dart';
@@ -5,8 +6,11 @@ import 'package:event/ui/home/widgets/custom_text_form_feild.dart';
 import 'package:event/utils/app_assets.dart';
 import 'package:event/utils/app_colors.dart';
 import 'package:event/utils/app_style.dart';
+import 'package:event/utils/firebase_utils.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 class AddEvent extends StatefulWidget {
@@ -19,8 +23,8 @@ class AddEvent extends StatefulWidget {
 
 class _AddEventState extends State<AddEvent> {
    int selectedIndex = 0;
-   String selectedEventImages = '';
-   String selectedEventNames = '';
+   String selectedEventImage = '';
+   String selectedEventName = '';
    TextEditingController titleController = TextEditingController();
    TextEditingController descriptionController = TextEditingController();
    var formKey = GlobalKey<FormState>();
@@ -28,7 +32,8 @@ class _AddEventState extends State<AddEvent> {
    String formatedDate = '';
    String formatedTime = '';
    TimeOfDay? selectedTime;
-   
+   bool showDateError = false;
+   bool showTimeError = false;
 
   @override
   Widget build(BuildContext context) {
@@ -56,8 +61,8 @@ class _AddEventState extends State<AddEvent> {
       AppAssets.holidayImage,
       AppAssets.etingImage,
     ];
-    selectedEventImages = lightEventImagesList[selectedIndex];
-    selectedEventNames = eventNameList[selectedIndex];
+    selectedEventImage = lightEventImagesList[selectedIndex];
+    selectedEventName = eventNameList[selectedIndex];
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.create_event,style: AppStyle.medium20Primary),
@@ -75,7 +80,7 @@ class _AddEventState extends State<AddEvent> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(16),
                 child: Image.asset(
-                  selectedEventImages,
+                  selectedEventImage,
                   ),
               ),
               SizedBox(height: height * 0.015,),
@@ -155,6 +160,17 @@ class _AddEventState extends State<AddEvent> {
                     formatedDate,
                    ),
               ),
+              Visibility(
+                visible: showDateError,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(AppLocalizations.of(context)!.plaese_enter_date,style: AppStyle.medium14White.copyWith(
+                      color: AppColors.redColor,
+                    ),)
+                  ],
+                ),
+                ),
               // SizedBox(height: height * 0.015,),
               SizedBox(
                 height: height * 0.04,
@@ -168,6 +184,17 @@ class _AddEventState extends State<AddEvent> {
                    formatedTime,
                    ),
               ),
+              Visibility(
+                visible: showTimeError,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(AppLocalizations.of(context)!.plaese_enter_time,style: AppStyle.medium14White.copyWith(
+                      color: AppColors.redColor,
+                    ),)
+                  ],
+                ),
+                ),
              SizedBox(height: height * 0.01,),
               Text(AppLocalizations.of(context)!.location,style: Theme.of(context).textTheme.titleMedium,),
               SizedBox(height: height * 0.01,),
@@ -286,8 +313,35 @@ void chooseDate() async {
 
 
   void addEvent(){
-      if(formKey.currentState?.validate() == true){
-        // add event to firestore
-      }
-  }
+            setState(() {
+              showDateError = selectedDate == null;
+              showTimeError = selectedTime == null;
+              if(formKey.currentState?.validate() == true){
+                  if (!showDateError && !showTimeError) {
+                          Event event = Event(
+                            eventImage: selectedEventImage,
+                            eventName: selectedEventName,
+                              title: titleController.text,
+                              description: descriptionController.text,
+                                eventDateTime: selectedDate!,
+                                eventTime: formatedTime
+                                );
+                          FirebaseUtils.addEventToFireStore(event).timeout(Duration(milliseconds: 500),
+                          onTimeout: () {
+                            Fluttertoast.showToast(
+                                msg: AppLocalizations.of(context)!.event_add_seccesffuly,
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                backgroundColor: AppColors.blackColor,
+                                textColor: Colors.white,
+                                fontSize: 16.0
+                            );
+                          },
+                          );
+                       }
+              }
+              
+            });
+          
+        }
 }

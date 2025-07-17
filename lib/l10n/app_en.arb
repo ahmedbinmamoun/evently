@@ -65,7 +65,10 @@
     "choose_event_location" : "Choose Event Location",
     "add_event" : "Add Event",
     "plaese_enter_event_title" : "Plaese Enter Event Title",
-    "plaese_enter_event_description" : "Plaese Enter Event Description"
+    "plaese_enter_event_description" : "Plaese Enter Event Description",
+    "event_add_seccesffuly" : "Event add seccesffuly",
+    "plaese_enter_time" : "Plaese Enter Time",
+    "plaese_enter_date" : "Plaese Enter Date"
     
 
 }
