@@ -1,4 +1,5 @@
 import 'package:event/model/event.dart';
+import 'package:event/providers/event_list_provider.dart';
 import 'package:event/ui/home/add_event/widgets/add_date_or_time_widget.dart';
 import 'package:event/ui/home/tabs/home_tab/widgets/event_tab_item.dart';
 import 'package:event/ui/home/widgets/custom_elevated_button.dart';
@@ -7,11 +8,12 @@ import 'package:event/utils/app_assets.dart';
 import 'package:event/utils/app_colors.dart';
 import 'package:event/utils/app_style.dart';
 import 'package:event/utils/firebase_utils.dart';
+import 'package:event/utils/snack_bar_utils.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class AddEvent extends StatefulWidget {
    AddEvent({super.key});
@@ -34,11 +36,13 @@ class _AddEventState extends State<AddEvent> {
    TimeOfDay? selectedTime;
    bool showDateError = false;
    bool showTimeError = false;
+   late EventListProvider eventListProvider;
 
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
+     eventListProvider = Provider.of<EventListProvider>(context);
     List<String> eventNameList = [
       AppLocalizations.of(context)!.sports,
       AppLocalizations.of(context)!.birthday,
@@ -328,14 +332,17 @@ void chooseDate() async {
                                 );
                           FirebaseUtils.addEventToFireStore(event).timeout(Duration(milliseconds: 500),
                           onTimeout: () {
-                            Fluttertoast.showToast(
-                                msg: AppLocalizations.of(context)!.event_add_seccesffuly,
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.BOTTOM,
-                                backgroundColor: AppColors.blackColor,
-                                textColor: Colors.white,
-                                fontSize: 16.0
-                            );
+                            // Toastutils.toastMsg(
+                            //   msg: AppLocalizations.of(context)!.event_added_seccesffuly,
+                            //   backgroundColor: AppColors.primaryLight);
+                               
+                               SnackBarUtils.showSnackBar(
+                                context: context,
+                                text: AppLocalizations.of(context)!.event_added_seccesffuly);
+                            
+                               
+                                eventListProvider.getAllEvents();
+                                Navigator.pop(context);
                           },
                           );
                        }

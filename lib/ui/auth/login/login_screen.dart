@@ -6,8 +6,11 @@ import 'package:event/utils/app_assets.dart';
 import 'package:event/utils/app_colors.dart';
 import 'package:event/utils/app_routes.dart';
 import 'package:event/utils/app_style.dart';
+import 'package:event/utils/dialog_utils.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -18,11 +21,13 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  GoogleSignInAccount? _user;
   TextEditingController emailController = TextEditingController(text: 'ahmedbinmamoun@gmail.com');
 
   TextEditingController passwordController = TextEditingController(text: '123456');
 
   var formKey = GlobalKey<FormState>();
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -157,8 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(height: height * 0.02,),
                 CustomElevatedButton(
-                  onPressed: (){
-                },
+                  onPressed: loginWithGoogle,
                 backgroundColor: AppColors.transparentColor,
                 borderColorSide: AppColors.primaryLight ,
                 hasIcon: true,
@@ -198,12 +202,63 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void login() {
+  void login() async{
     if(formKey.currentState?.validate() == true){
+      DialogUtils.showDialgLoding(context: context);  
+      try {
+  final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+    email: emailController.text,
+    password: passwordController.text
+  );
+  DialogUtils.hideLoading(context: context);
+  DialogUtils.showMessage(
+    context: context, 
+    message: 'login Succesfully.',
+    title: 'Succesfully',
+    posActionsName: 'OK',
+    posAction: (){
       Navigator.pushReplacementNamed(context, AppRoutes.homeRouteName);
+    }
+    );
+  
+} on FirebaseAuthException catch (e) {
+  if (e.code == 'invalid-credential') {
+    DialogUtils.hideLoading(context: context);
+    DialogUtils.showMessage(
+    context: context, 
+    message: 'Email or password is wrong',
+    title: 'Error',
+    posActionsName: 'OK',
+    
+    );
+  } else if(e.code == 'network-request-failed'){
+    DialogUtils.hideLoading(context: context);
+    DialogUtils.showMessage(
+    context: context, 
+    message: 'No network',
+    title: 'Error',
+    posActionsName: 'OK',
+    
+    );
+  }
+}catch(e){
+  DialogUtils.hideLoading(context: context);
+    DialogUtils.showMessage(
+    context: context, 
+    message: e.toString(),
+    title: 'Error',
+    posActionsName: 'OK',
+    
+    );
+}
     }
 }
 
-  void loginWithGoogle() {}
+
+   
+  
+
+ Future<void> loginWithGoogle() async {
+  }
 }
 

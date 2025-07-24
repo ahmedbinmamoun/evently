@@ -6,6 +6,8 @@ import 'package:event/utils/app_assets.dart';
 import 'package:event/utils/app_colors.dart';
 import 'package:event/utils/app_routes.dart';
 import 'package:event/utils/app_style.dart';
+import 'package:event/utils/dialog_utils.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -193,9 +195,66 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  void register() {
+  void register() async{
     if(formKey.currentState?.validate() == true){
-      Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.homeRouteName, (route) => false,);
+      DialogUtils.showDialgLoding(context: context);
+      try {
+  final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+    email: emailController.text,
+    password: passwordController.text,
+  );
+  DialogUtils.hideLoading(context: context);
+  DialogUtils.showMessage(
+    context: context, 
+    message: 'Register Succesfully.',
+    title: 'Succesfully',
+    posActionsName: 'OK',
+    posAction: (){
+      Navigator.pushReplacementNamed(context, AppRoutes.homeRouteName);
+    }
+    );
+  print('register succesfully..');
+  print('id: ${credential.user?.uid}');
+} on FirebaseAuthException catch (e) {
+  if (e.code == 'weak-password') {
+    DialogUtils.hideLoading(context: context);
+    DialogUtils.showMessage(
+    context: context, 
+    message: 'The password provided is too weak.',
+    title: 'Error',
+    posActionsName: 'OK',
+    
+    );
+  } else if (e.code == 'email-already-in-use') {
+    DialogUtils.hideLoading(context: context);
+    DialogUtils.showMessage(
+    context: context, 
+    message: 'The account already exists for that email.',
+    title: 'Error',
+    posActionsName: 'OK',
+    
+    );
+  }else if(e.code == 'network-request-failed'){
+    DialogUtils.hideLoading(context: context);
+    DialogUtils.showMessage(
+    context: context, 
+    message: 'No network',
+    title: 'Error',
+    posActionsName: 'OK',
+    
+    );
+  }
+} catch (e) {
+  DialogUtils.hideLoading(context: context);
+    DialogUtils.showMessage(
+    context: context, 
+    message: e.toString(),
+    title: 'Error',
+    posActionsName: 'OK',
+    
+    );
+  print(e);
+}
 
     }
 }

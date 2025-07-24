@@ -1,3 +1,4 @@
+import 'package:event/providers/event_list_provider.dart';
 import 'package:event/ui/home/tabs/home_tab/widgets/event_item.dart';
 import 'package:event/ui/home/widgets/custom_text_form_feild.dart';
 import 'package:event/utils/app_assets.dart';
@@ -5,15 +6,36 @@ import 'package:event/utils/app_colors.dart';
 import 'package:event/utils/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 
-class FavoriteTab extends StatelessWidget {
+class FavoriteTab extends StatefulWidget {
    FavoriteTab({super.key});
+
+  @override
+  State<FavoriteTab> createState() => _FavoriteTabState();
+}
+
+class _FavoriteTabState extends State<FavoriteTab> {
    TextEditingController searchController = TextEditingController();
+   late EventListProvider eventListProvider;
+   @override
+
+
+  void initState() {
+    // TODO: implement initState
+    super.initState();  
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      eventListProvider.getAllFavoriteEventFromFirsStore() ;
+    },);
+    
+  }
 
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
+     eventListProvider = Provider.of<EventListProvider>(context);
     
     return SafeArea(
       child: Padding(
@@ -33,15 +55,26 @@ class FavoriteTab extends StatelessWidget {
             prefixIcon: Image.asset(AppAssets.searchIcon),
           ),
             Expanded(
-                child: ListView.separated(
+                child: eventListProvider.favoriteEventList.isEmpty ?
+                Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Lottie.asset(Animations.loadingAnimation),
+                    Text('${AppLocalizations.of(context)!.no_event}..',style: AppStyle.bold16Black,)
+                  ],
+                ),
+              )
+                :
+                 ListView.separated(
                 padding: EdgeInsets.only(top: height * 0.02),
                 itemBuilder: (context, index) {
-                return EventItem();
+                return EventItem(event: eventListProvider.favoriteEventList[index]);
                 },
                separatorBuilder: (context, index) {
                  return SizedBox(height: height * 0.02,);
                  },
-                itemCount: 20),
+                itemCount: eventListProvider.favoriteEventList.length),
                 ),
           
         ],

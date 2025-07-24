@@ -1,10 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:event/model/event.dart';
+import 'package:event/providers/event_list_provider.dart';
 import 'package:event/ui/home/tabs/home_tab/widgets/event_item.dart';
 import 'package:event/ui/home/tabs/home_tab/widgets/event_tab_item.dart';
 import 'package:event/utils/app_assets.dart';
 import 'package:event/utils/app_colors.dart';
 import 'package:event/utils/app_style.dart';
+import 'package:event/utils/firebase_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 
 class HomeTab extends StatefulWidget {
   const HomeTab({super.key});
@@ -14,24 +20,19 @@ class HomeTab extends StatefulWidget {
 }
 
 class _HomeTabState extends State<HomeTab> {
-  int selectedIndex = 0;
+  final Stream<QuerySnapshot> usersStream = FirebaseFirestore.instance.collection('users').snapshots();
+  
+  
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-    List<String> eventNameList = [
-      AppLocalizations.of(context)!.all,
-      AppLocalizations.of(context)!.sports,
-      AppLocalizations.of(context)!.birthday,
-      AppLocalizations.of(context)!.meeting,
-      AppLocalizations.of(context)!.gaming,
-      AppLocalizations.of(context)!.workshop,
-      AppLocalizations.of(context)!.book_club,
-      AppLocalizations.of(context)!.exhibition,
-      AppLocalizations.of(context)!.holiday,
-      AppLocalizations.of(context)!.eating,
-      
-    ];
+    var eventListProvider = Provider.of<EventListProvider>(context);
+    eventListProvider.getEventNameList(context);
+    if (eventListProvider.eventsList.isEmpty) {
+      eventListProvider.getAllEvents();
+    }
+   
     
     return Scaffold(
       appBar: AppBar(
@@ -90,7 +91,7 @@ class _HomeTabState extends State<HomeTab> {
               ),
               SizedBox(height: height * 0.01,),
               DefaultTabController(
-                length: eventNameList.length,
+                length: eventListProvider.eventNameList.length,
                child: TabBar(
                 isScrollable: true,
                 tabAlignment: TabAlignment.start,
@@ -99,17 +100,14 @@ class _HomeTabState extends State<HomeTab> {
                 indicatorColor: AppColors.transparentColor,
                 dividerColor: AppColors.transparentColor,
                 onTap: (index) {
-                  selectedIndex = index;
-                  setState(() {
-                    
-                  });
+                  eventListProvider.changeSelectedIndex(index);
                 },
-                tabs: eventNameList.map((eventName){
+                tabs: eventListProvider.eventNameList.map((eventName){
                   return EventTabItem(
                     selectedTextStyle: Theme.of(context).textTheme.headlineMedium!,
                     unSelectedTextStyle: Theme.of(context).textTheme.headlineSmall!,
                     selectedColor: Theme.of(context).focusColor,
-                    isSelected: selectedIndex == eventNameList.indexOf(eventName),
+                    isSelected: eventListProvider.selectedIndex == eventListProvider.eventNameList.indexOf(eventName),
                    eventName: eventName
                    );
                 }).toList(),
@@ -127,19 +125,42 @@ class _HomeTabState extends State<HomeTab> {
         child: Column(
           children: [
             Expanded(
-              child: ListView.separated(
-              padding: EdgeInsets.only(top: height * 0.02),
-              itemBuilder: (context, index) {
-              return EventItem();
-              },
-             separatorBuilder: (context, index) {
-               return SizedBox(height: height * 0.02,);
-               },
-              itemCount: 20),
+              child: eventListProvider.filterEventsList.isEmpty ?
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Lottie.asset(Animations.loadingAnimation),
+                    Text('${AppLocalizations.of(context)!.no_event}..',style: AppStyle.bold16Black,)
+                  ],
+                ),
+              )
+              :
+              StreamBuilder<QuerySnapshot>(
+                stream: usersStream,
+                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (snapshot.hasError) {
+                      return Text('Something went wrong');
+                    }
+
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Text("Loading");
+                    }
+                return ListView.separated(
+                padding: EdgeInsets.only(top: height * 0.02),
+                itemBuilder: (context, index) {
+                return EventItem(event: eventListProvider.filterEventsList[index],);
+                },
+                             separatorBuilder: (context, index) {
+                 return SizedBox(height: height * 0.02,);
+                 },
+                itemCount: eventListProvider.filterEventsList.length);
+  })
               ),
           ],
         ),
       ),
     );
   }
+  
 }

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event/firebase_options.dart';
 import 'package:event/providers/app_language_provider.dart';
 import 'package:event/providers/app_theme_provider.dart';
+import 'package:event/providers/event_list_provider.dart';
 import 'package:event/ui/auth/login/login_screen.dart';
 import 'package:event/ui/auth/register/register_screen.dart';
 import 'package:event/ui/auth/reset_password/reset_password_screen.dart';
@@ -35,6 +36,7 @@ await FirebaseFirestore.instance.disableNetwork();
       providers: [
         ChangeNotifierProvider.value(value: appLanguageProvider),
         ChangeNotifierProvider.value(value: appThemeProvider), 
+        ChangeNotifierProvider(create: (context)=> EventListProvider())
       ],
       child: Myapp(),
     ),
@@ -53,7 +55,7 @@ class Myapp extends StatelessWidget {
     var appThemeProvider = Provider.of<AppThemeProvider>(context);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: AppRoutes.startRouteName,
+      initialRoute: AppRoutes.loginRouteName,
       routes: {
         AppRoutes.homeRouteName : (context) => HomeScreen(),
         AppRoutes.onboardingRouteName : (context) => OnboardingScreen(),
