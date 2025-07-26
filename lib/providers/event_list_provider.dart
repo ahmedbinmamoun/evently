@@ -11,9 +11,7 @@ class EventListProvider extends ChangeNotifier{
    List<String> eventNameList = [];
    List<Event> favoriteEventList = [];
    int selectedIndex = 0;
-   Map<int,String> filterMap = {
-
-   };
+   
 
     List<String> getEventNameList(BuildContext context){
       return eventNameList = [
@@ -75,6 +73,16 @@ class EventListProvider extends ChangeNotifier{
    getAllFavoriteEvent();
    notifyListeners();
   }
+
+  void updateEvent(Event updatedEvent) {
+  int index = eventsList.indexWhere((e) => e.id == updatedEvent.id);
+  if (index != -1) {
+    eventsList[index] = updatedEvent;
+    notifyListeners();
+  }
+}
+
+
 
   void getAllFavoriteEvent()async{
     var querySnapshot = await FirebaseUtils.getEventCollection().get();

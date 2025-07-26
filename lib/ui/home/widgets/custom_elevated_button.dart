@@ -9,6 +9,7 @@ class CustomElevatedButton extends StatelessWidget {
   Color? borderColorSide;
   bool hasIcon;
   Widget? child;
+  double? verticalPadding;
    CustomElevatedButton({super.key,
    required this.onPressed,
     this.text,
@@ -16,6 +17,7 @@ class CustomElevatedButton extends StatelessWidget {
    this.borderColorSide,
    this.hasIcon = false,
    this.child,
+   this.verticalPadding = 0.015
    });
 
   @override
@@ -31,7 +33,7 @@ class CustomElevatedButton extends StatelessWidget {
           elevation: 0,
           backgroundColor: backgroundColor,
           padding: EdgeInsets.symmetric(
-            vertical: height * 0.015,
+            vertical: verticalPadding! * height ,
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),

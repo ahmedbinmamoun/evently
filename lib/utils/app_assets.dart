@@ -41,6 +41,10 @@ class AppAssets {
   static const String calenderIcon= 'assets/images/calender_icon.png';
   static const String clockIcon= 'assets/images/clock_icon.png';
   static const String locationIcon= 'assets/images/location_icon.png';
+  static const String edit= 'assets/images/edit.png';
+  static const String deleteIcon= 'assets/images/delete_icon.png';
+  static const String locationImage= 'assets/images/location_image.png';
+
 }
 
 class Animations{

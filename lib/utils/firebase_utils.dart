@@ -14,4 +14,11 @@ class FirebaseUtils {
     event.id = docRef.id;
     return docRef.set(event);
   }
+
+  static Future<void> updateEvent(Event event){
+    CollectionReference<Event> collectionRef = getEventCollection();
+    DocumentReference<Event> docRef = collectionRef.doc(event.id);
+    return docRef.update(event.toFireStore());
+  }
+
 }

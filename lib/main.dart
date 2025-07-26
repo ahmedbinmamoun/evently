@@ -6,6 +6,8 @@ import 'package:event/providers/event_list_provider.dart';
 import 'package:event/ui/auth/login/login_screen.dart';
 import 'package:event/ui/auth/register/register_screen.dart';
 import 'package:event/ui/auth/reset_password/reset_password_screen.dart';
+import 'package:event/ui/edit_event/edit_event.dart';
+import 'package:event/ui/event_details/event_details.dart';
 import 'package:event/ui/home/add_event/add_event.dart';
 import 'package:event/ui/home/home_screen.dart';
 import 'package:event/ui/onboarding/onboarding_screen.dart';
@@ -64,6 +66,8 @@ class Myapp extends StatelessWidget {
         AppRoutes.registerRouteName : (context) => RegisterScreen(),
         AppRoutes.resetPasswordRouteName : (context) => ResetPasswordScreen(),
         AppRoutes.addEvent : (context) => AddEvent(),
+        AppRoutes.editEvent : (context) => EditEvent(),
+        AppRoutes.eventDetails : (context) => EventDetails(),
       },
       locale: Locale(languageProvider.appLanguage),
       localizationsDelegates: AppLocalizations.localizationsDelegates,

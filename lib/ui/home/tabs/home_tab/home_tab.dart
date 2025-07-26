@@ -5,6 +5,7 @@ import 'package:event/ui/home/tabs/home_tab/widgets/event_item.dart';
 import 'package:event/ui/home/tabs/home_tab/widgets/event_tab_item.dart';
 import 'package:event/utils/app_assets.dart';
 import 'package:event/utils/app_colors.dart';
+import 'package:event/utils/app_routes.dart';
 import 'package:event/utils/app_style.dart';
 import 'package:event/utils/firebase_utils.dart';
 import 'package:flutter/material.dart';
@@ -146,9 +147,12 @@ class _HomeTabState extends State<HomeTab> {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Text("Loading");
                     }
+                   
                 return ListView.separated(
                 padding: EdgeInsets.only(top: height * 0.02),
                 itemBuilder: (context, index) {
+                  
+                  
                 return EventItem(event: eventListProvider.filterEventsList[index],);
                 },
                              separatorBuilder: (context, index) {
@@ -157,6 +161,8 @@ class _HomeTabState extends State<HomeTab> {
                 itemCount: eventListProvider.filterEventsList.length);
   })
               ),
+              
+              SizedBox(height: height * 0.03,)
           ],
         ),
       ),
