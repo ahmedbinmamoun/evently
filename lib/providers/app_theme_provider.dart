@@ -1,24 +1,24 @@
 import 'package:event/utils/theme_storage.dart';
 import 'package:flutter/material.dart';
 
-class AppThemeProvider extends ChangeNotifier{
-
+class AppThemeProvider extends ChangeNotifier {
   ThemeMode appTheme = ThemeMode.light;
 
-  void changeTheme(ThemeMode newTheme){
-    if(appTheme == newTheme){
-      return ;
+  void changeTheme(ThemeMode newTheme) {
+    if (appTheme == newTheme) {
+      return;
     }
     appTheme = newTheme;
     ThemeStorage.saveTheme(newTheme);
     notifyListeners();
   }
+
   Future<void> loadTheme() async {
-  appTheme = await ThemeStorage.loadTheme();
-  notifyListeners();
-}
-  bool isDarkMode(){
+    appTheme = await ThemeStorage.loadTheme();
+    notifyListeners();
+  }
+
+  bool isDarkMode() {
     return appTheme == ThemeMode.dark;
   }
-  
 }
