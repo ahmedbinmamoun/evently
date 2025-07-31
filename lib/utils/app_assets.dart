@@ -37,6 +37,26 @@ class AppAssets {
   static const String exhibitionImage= 'assets/images/exhibition_image.png';
   static const String holidayImage= 'assets/images/holiday_image.png';
   static const String etingImage= 'assets/images/eating_image.png';
+  static const String birthdayDarkImage= 'assets/images/birthday_dark.png';
+  static const String sportDarkImage= 'assets/images/sport_dark.png';
+  static const String meetingDarkImage= 'assets/images/meeting_dark.png';
+  static const String gamingDarkImage= 'assets/images/gaming_dark.png';
+  static const String workshopDarkImage= 'assets/images/workshope_dark.png';
+  static const String bookClubDarkImage= 'assets/images/book_club_dark.png';
+  static const String exhibitionDarkImage= 'assets/images/exhibition_dark.png';
+  static const String holidayDarkImage= 'assets/images/holiday_dark.png';
+  static const String etingDarkImage= 'assets/images/eating_dark.png';
+  
+  static const String allIcon= 'assets/images/allIcon.png';
+  static const String birthdayIcon= 'assets/images/birthdayIcon.png';
+  static const String sportIcon= 'assets/images/sportIcon.png';
+  static const String meetingIcon= 'assets/images/meetingIcon.png';
+  static const String gamingIcon= 'assets/images/gamingIcon.png';
+  static const String workshopIcon= 'assets/images/workshopIcon.png';
+  static const String bookClubIcon= 'assets/images/bookIcon.png';
+  static const String exhibitionIcon= 'assets/images/exhibitionIcon.png';
+  static const String holidayIcon= 'assets/images/holidayIcon.png';
+  static const String eatingIcon= 'assets/images/eatingIcon.png';
   static const String editIcon= 'assets/images/edit_icon.png';
   static const String calenderIcon= 'assets/images/calender_icon.png';
   static const String clockIcon= 'assets/images/clock_icon.png';

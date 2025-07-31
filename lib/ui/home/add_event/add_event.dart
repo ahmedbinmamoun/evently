@@ -1,4 +1,5 @@
 import 'package:event/model/event.dart';
+import 'package:event/providers/app_theme_provider.dart';
 import 'package:event/providers/event_list_provider.dart';
 import 'package:event/providers/user_provider.dart';
 import 'package:event/ui/home/add_event/widgets/add_date_or_time_widget.dart';
@@ -10,7 +11,6 @@ import 'package:event/utils/app_colors.dart';
 import 'package:event/utils/app_style.dart';
 import 'package:event/utils/firebase_utils.dart';
 import 'package:event/utils/snack_bar_utils.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
@@ -43,6 +43,7 @@ class _AddEventState extends State<AddEvent> {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     eventListProvider = Provider.of<EventListProvider>(context);
+    var appThemeProvider = Provider.of<AppThemeProvider>(context);
     List<String> eventNameList = [
       AppLocalizations.of(context)!.sports,
       AppLocalizations.of(context)!.birthday,
@@ -65,8 +66,19 @@ class _AddEventState extends State<AddEvent> {
       AppAssets.holidayImage,
       AppAssets.etingImage,
     ];
+    List<String> darkEventImagesList = [
+      AppAssets.sportDarkImage,
+      AppAssets.birthdayDarkImage,
+      AppAssets.meetingDarkImage,
+      AppAssets.gamingDarkImage,
+      AppAssets.workshopDarkImage,
+      AppAssets.bookClubDarkImage,
+      AppAssets.exhibitionDarkImage,
+      AppAssets.holidayDarkImage,
+      AppAssets.etingDarkImage,
+    ];
     selectedEventImage = lightEventImagesList[selectedIndex];
-    selectedEventName = eventNameList[selectedIndex];
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -103,9 +115,12 @@ class _AddEventState extends State<AddEvent> {
                         ),
                         unSelectedTextStyle: AppStyle.medium16Primary,
                         selectedColor: AppColors.primaryLight,
+                        selectedIconColor:
+                            Theme.of(context).scaffoldBackgroundColor,
                         borderSideColor: AppColors.primaryLight,
                         isSelected: selectedIndex == index,
                         eventName: eventNameList[index],
+                        eventIcon: eventListProvider.eventIcons[index + 1],
                       ),
                     );
                   },
@@ -191,7 +206,6 @@ class _AddEventState extends State<AddEvent> {
                         ],
                       ),
                     ),
-                    // SizedBox(height: height * 0.015,),
                     SizedBox(
                       height: height * 0.04,
                       child: AddDateOrTimeWidget(
@@ -342,13 +356,19 @@ class _AddEventState extends State<AddEvent> {
 
   void addEvent() {
     setState(() {
+      final eventListProvider = Provider.of<EventListProvider>(
+        context,
+        listen: false,
+      );
+      final selectedKey =
+          eventListProvider.eventCategoryKeys[selectedIndex + 1];
       showDateError = selectedDate == null;
       showTimeError = selectedTime == null;
       if (formKey.currentState?.validate() == true) {
         if (!showDateError && !showTimeError) {
           Event event = Event(
             eventImage: selectedEventImage,
-            eventName: selectedEventName,
+            eventName: selectedKey,
             title: titleController.text,
             description: descriptionController.text,
             eventDateTime: selectedDate!,
@@ -364,7 +384,9 @@ class _AddEventState extends State<AddEvent> {
               text: AppLocalizations.of(context)!.event_added_seccesffuly,
             );
 
-            eventListProvider.getAllEvents(userProvider.currentUset!.id);
+            eventListProvider.getFilterEventsFromFireStore(
+              userProvider.currentUset!.id,
+            );
             Navigator.pop(context);
           });
         }

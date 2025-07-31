@@ -27,7 +27,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController nameController = TextEditingController(text: 'Ahmed');
 
   TextEditingController emailController = TextEditingController(
-    text: 'ahmedbinmamoun@gmail.com',
+    text: 'ahmed@gmail.com',
   );
 
   TextEditingController passwordController = TextEditingController(
@@ -265,9 +265,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
         DialogUtils.hideLoading(context: context);
         DialogUtils.showMessage(
           context: context,
-          message: 'Register Succesfully.',
-          title: 'Succesfully',
-          posActionsName: 'OK',
+          message: AppLocalizations.of(context)!.register_succesfully,
+          title: AppLocalizations.of(context)!.succesfully,
+          posActionsName: AppLocalizations.of(context)!.ok,
           posAction: () {
             Navigator.pushNamedAndRemoveUntil(
               context,
@@ -276,32 +276,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
             );
           },
         );
-        print('register succesfully..');
-        print('id: ${credential.user?.uid}');
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
           DialogUtils.hideLoading(context: context);
           DialogUtils.showMessage(
             context: context,
-            message: 'The password provided is too weak.',
-            title: 'Error',
-            posActionsName: 'OK',
+            message: AppLocalizations.of(context)!.the_password_provided_is_too_weak,
+            title: AppLocalizations.of(context)!.error,
+            posActionsName: AppLocalizations.of(context)!.ok,
           );
         } else if (e.code == 'email-already-in-use') {
           DialogUtils.hideLoading(context: context);
           DialogUtils.showMessage(
             context: context,
-            message: 'The account already exists for that email.',
-            title: 'Error',
-            posActionsName: 'OK',
+            message: AppLocalizations.of(context)!.the_account_already_exists,
+            title: AppLocalizations.of(context)!.error,
+            posActionsName: AppLocalizations.of(context)!.ok,
           );
         } else if (e.code == 'network-request-failed') {
           DialogUtils.hideLoading(context: context);
           DialogUtils.showMessage(
             context: context,
-            message: 'No network',
-            title: 'Error',
-            posActionsName: 'OK',
+            message: AppLocalizations.of(context)!.network_error,
+            title: AppLocalizations.of(context)!.error,
+            posActionsName: AppLocalizations.of(context)!.ok,
           );
         }
       } catch (e) {
@@ -309,8 +307,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         DialogUtils.showMessage(
           context: context,
           message: e.toString(),
-          title: 'Error',
-          posActionsName: 'OK',
+          title: AppLocalizations.of(context)!.error,
+          posActionsName: AppLocalizations.of(context)!.ok,
         );
         print(e);
       }

@@ -69,7 +69,28 @@
     "event_added_seccesffuly" : "Event add seccesffuly",
     "plaese_enter_time" : "Plaese Enter Time",
     "plaese_enter_date" : "Plaese Enter Date",
-    "no_event" : "No Event"
+    "no_event" : "No Event",
+    "login_succesfully":"login Succesfully.",
+    "succesfully":"Succesfully",
+    "ok":"Ok",
+    "email_or_password_is_wrong":"Email or password is wrong",
+    "error":"Error",
+    "network_error":"Network error",
+    "the_account_already_exists":"The account already exists for that email.",
+    "the_password_provided_is_too_weak":"The password provided is too weak.",
+    "register_succesfully":"Register Succesfully.",
+    "update_event":"Update Event",
+    "event_updated_succesfully":"Event updated succesfully",
+    "event_details":"Event Details",
+    "are_you_sure_you_want_to_delete":"Are you sure you want to delete this event",
+    "yes":"Yes",
+    "no":"No",
+    "delete":"Delete",
+    "loading" : "Loading",
+    "en_ar" : "EN",
+    "edit_event" : "Edit Event"
+    
+    
     
 
 }

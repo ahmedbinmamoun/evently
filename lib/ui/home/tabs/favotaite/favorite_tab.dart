@@ -30,6 +30,16 @@ class _FavoriteTabState extends State<FavoriteTab> {
         userProvider.currentUset!.id,
       );
     });
+    searchController.addListener(() {
+      eventListProvider.searchFavoriteEvents(searchController.text);
+    },);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -49,6 +59,9 @@ class _FavoriteTabState extends State<FavoriteTab> {
           children: [
             SizedBox(height: height * 0.02),
             CustomTextFormFeild(
+              onChange: (searchText) {
+                eventListProvider.searchFavoriteEvents(searchText);
+              },
               controller: searchController,
               colorBorderSide: AppColors.primaryLight,
               cursorColor: AppColors.primaryLight,
@@ -58,7 +71,7 @@ class _FavoriteTabState extends State<FavoriteTab> {
             ),
             Expanded(
               child:
-                  eventListProvider.favoriteEventList.isEmpty
+                  eventListProvider.searchedFavoriteList.isEmpty
                       ? Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -75,13 +88,13 @@ class _FavoriteTabState extends State<FavoriteTab> {
                         padding: EdgeInsets.only(top: height * 0.02),
                         itemBuilder: (context, index) {
                           return EventItem(
-                            event: eventListProvider.favoriteEventList[index],
+                            event: eventListProvider.searchedFavoriteList[index],
                           );
                         },
                         separatorBuilder: (context, index) {
                           return SizedBox(height: height * 0.02);
                         },
-                        itemCount: eventListProvider.favoriteEventList.length,
+                        itemCount: eventListProvider.searchedFavoriteList.length,
                       ),
             ),
           ],

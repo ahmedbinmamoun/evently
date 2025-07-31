@@ -1,6 +1,7 @@
 import 'package:event/utils/app_colors.dart';
 import 'package:event/utils/app_style.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DialogUtils {
   static void showDialgLoding({required BuildContext context}){
@@ -15,7 +16,7 @@ class DialogUtils {
               color: AppColors.primaryLight,
             ),
             SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
-            Text('Loading..',style: AppStyle.medium16Black,)
+            Text('${AppLocalizations.of(context)!.loading}..',style: AppStyle.medium16Black,)
           ],
         ),
        ),

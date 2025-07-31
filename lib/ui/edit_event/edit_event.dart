@@ -1,5 +1,6 @@
 import 'package:event/model/event.dart';
 import 'package:event/providers/event_list_provider.dart';
+import 'package:event/providers/user_provider.dart';
 import 'package:event/ui/home/add_event/widgets/add_date_or_time_widget.dart';
 import 'package:event/ui/home/tabs/home_tab/widgets/event_tab_item.dart';
 import 'package:event/ui/home/widgets/custom_elevated_button.dart';
@@ -13,6 +14,7 @@ import 'package:event/utils/snack_bar_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 class EditEvent extends StatefulWidget {
@@ -39,6 +41,8 @@ class _EditEventState extends State<EditEvent> {
   bool showTimeError = false;
   List<String> eventNameList = [];
   List<String> lightEventImagesList = [];
+  bool isEventInitialized = false;
+  List<String> eventCategoryKeys = [];
 
   @override
   void initState() {
@@ -46,6 +50,12 @@ class _EditEventState extends State<EditEvent> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       event = ModalRoute.of(context)?.settings.arguments as Event;
+      final eventProvider = Provider.of<EventListProvider>(
+        context,
+        listen: false,
+      );
+      eventCategoryKeys = eventProvider.eventCategoryMap.keys.toList();
+      eventNameList = eventProvider.getEventNameList(context);
 
       eventNameList = [
         AppLocalizations.of(context)!.sports,
@@ -71,13 +81,16 @@ class _EditEventState extends State<EditEvent> {
         AppAssets.etingImage,
       ];
 
-      selectedIndex = eventNameList.indexOf(event.eventName);
+      selectedIndex = eventCategoryKeys.indexOf(event.eventName) - 1;
+      if (selectedIndex == -1) selectedIndex = 0;
+
       selectedEventImage = lightEventImagesList[selectedIndex];
       selectedEventName = eventNameList[selectedIndex];
       titleController.text = event.title;
       descriptionController.text = event.description;
       formatedTime = event.eventTime;
       selectedDate = event.eventDateTime;
+      isEventInitialized = true;
 
       setState(() {});
     });
@@ -89,212 +102,219 @@ class _EditEventState extends State<EditEvent> {
     var width = MediaQuery.of(context).size.width;
     eventListProvider = Provider.of<EventListProvider>(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          AppLocalizations.of(context)!.create_event,
-          style: AppStyle.medium20Primary,
-        ),
-        centerTitle: true,
-        backgroundColor: AppColors.transparentColor,
-      ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: width * 0.04),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Image.asset(selectedEventImage),
-              ),
-              SizedBox(height: height * 0.015),
-              SizedBox(
-                height: height * 0.04,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {
-                        selectedIndex = index;
-                        selectedEventImage = lightEventImagesList[index];
-                        selectedEventName = eventNameList[index];
-                        setState(() {});
-                      },
-                      child: EventTabItem(
-                        selectedTextStyle: AppStyle.medium16Black.copyWith(
-                          color: Theme.of(context).shadowColor,
-                        ),
-                        unSelectedTextStyle: AppStyle.medium16Primary,
-                        selectedColor: AppColors.primaryLight,
-                        borderSideColor: AppColors.primaryLight,
-                        isSelected: selectedIndex == index,
-                        eventName: eventNameList[index],
-                      ),
-                    );
-                  },
-                  separatorBuilder: (context, index) {
-                    return SizedBox(width: width * 0.02);
-                  },
-                  itemCount: eventNameList.length,
-                ),
-              ),
-              SizedBox(height: height * 0.01),
-              Form(
-                key: formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      AppLocalizations.of(context)!.title,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    SizedBox(height: height * 0.005),
-                    CustomTextFormFeild(
-                      controller: titleController,
-                      validator: (text) {
-                        if (text == null || text.trim().isEmpty) {
-                          return AppLocalizations.of(
-                            context,
-                          )!.plaese_enter_event_title;
-                        }
-                        return null;
-                      },
-                      prefixIcon: Image.asset(
-                        AppAssets.editIcon,
-                        color: Theme.of(context).hintColor,
-                      ),
-                      hintText: AppLocalizations.of(context)!.event_title,
-                      colorBorderSide: Theme.of(context).cardColor,
-                    ),
-                    SizedBox(height: height * 0.01),
-                    Text(
-                      AppLocalizations.of(context)!.description,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    SizedBox(height: height * 0.005),
-                    CustomTextFormFeild(
-                      controller: descriptionController,
-                      validator: (text) {
-                        if (text == null || text.trim().isEmpty) {
-                          return AppLocalizations.of(
-                            context,
-                          )!.plaese_enter_event_description;
-                        }
-                        return null;
-                      },
-                      hintText: AppLocalizations.of(context)!.event_description,
-
-                      colorBorderSide: Theme.of(context).cardColor,
-                      maxLine: 4,
-                    ),
-                    SizedBox(height: height * 0.01),
-                    SizedBox(
-                      height: height * 0.04,
-                      child: AddDateOrTimeWidget(
-                        onChooseDateOrTimeClick: chooseDate,
-                        icon: AppAssets.calenderIcon,
-                        dateOrTimeEventText:
-                            AppLocalizations.of(context)!.event_date,
-                        chooseDateOrTime:
-                            formatedDate == ''
-                                ? DateFormat(
-                                  'dd/MM/yyyy',
-                                ).format(event.eventDateTime)
-                                : formatedDate,
-                      ),
-                    ),
-                    Visibility(
-                      visible: showDateError,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.plaese_enter_date,
-                            style: AppStyle.medium14White.copyWith(
-                              color: AppColors.redColor,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    // SizedBox(height: height * 0.015,),
-                    SizedBox(
-                      height: height * 0.04,
-                      child: AddDateOrTimeWidget(
-                        onChooseDateOrTimeClick: chooseTime,
-                        icon: AppAssets.clockIcon,
-                        dateOrTimeEventText:
-                            AppLocalizations.of(context)!.event_time,
-                        chooseDateOrTime: formatedTime,
-                      ),
-                    ),
-                    Visibility(
-                      visible: showTimeError,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.plaese_enter_time,
-                            style: AppStyle.medium14White.copyWith(
-                              color: AppColors.redColor,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: height * 0.01),
-                    Text(
-                      AppLocalizations.of(context)!.location,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    SizedBox(height: height * 0.01),
-                    CustomElevatedButton(
-                      onPressed: () {},
-                      hasIcon: true,
-                      backgroundColor: AppColors.transparentColor,
-                      borderColorSide: AppColors.primaryLight,
-                      child: Row(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.symmetric(
-                              horizontal: width * 0.02,
-                            ),
-                            padding: EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: AppColors.primaryLight,
-                            ),
-                            child: Image.asset(AppAssets.locationIcon),
-                          ),
-                          Text(
-                            AppLocalizations.of(context)!.choose_event_location,
-                            style: AppStyle.medium16Primary,
-                          ),
-                          Spacer(),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            color: AppColors.primaryLight,
-                          ),
-                          SizedBox(width: width * 0.02),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: height * 0.015),
-                    CustomElevatedButton(
-                      onPressed: () {
-                        updateEvent();
-                      },
-                      text: 'Update Event',
-                    ),
-                  ],
-                ),
-              ),
-            ],
+    return !isEventInitialized
+        ? Center(child: Lottie.asset(Animations.loadingAnimation))
+        : Scaffold(
+          appBar: AppBar(
+            title: Text(
+              AppLocalizations.of(context)!.edit_event,
+              style: AppStyle.medium20Primary,
+            ),
+            centerTitle: true,
+            backgroundColor: AppColors.transparentColor,
           ),
-        ),
-      ),
-    );
+          body: Padding(
+            padding: EdgeInsets.symmetric(horizontal: width * 0.04),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: Image.asset(selectedEventImage),
+                  ),
+                  SizedBox(height: height * 0.015),
+                  SizedBox(
+                    height: height * 0.04,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                          onTap: () {
+                            selectedIndex = index;
+                            selectedEventImage = lightEventImagesList[index];
+                            selectedEventName = eventNameList[index];
+                            setState(() {});
+                          },
+                          child: EventTabItem(
+                            selectedTextStyle: AppStyle.medium16Black.copyWith(
+                              color: Theme.of(context).shadowColor,
+                            ),
+                            unSelectedTextStyle: AppStyle.medium16Primary,
+                            selectedColor: AppColors.primaryLight,
+                            selectedIconColor: AppColors.whiteColor,
+                            borderSideColor: AppColors.primaryLight,
+                            isSelected: selectedIndex == index,
+                            eventName: eventNameList[index],
+                            eventIcon: eventListProvider.eventIcons[index + 1],
+                          ),
+                        );
+                      },
+                      separatorBuilder: (context, index) {
+                        return SizedBox(width: width * 0.02);
+                      },
+                      itemCount: eventNameList.length,
+                    ),
+                  ),
+                  SizedBox(height: height * 0.01),
+                  Form(
+                    key: formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.title,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        SizedBox(height: height * 0.005),
+                        CustomTextFormFeild(
+                          controller: titleController,
+                          validator: (text) {
+                            if (text == null || text.trim().isEmpty) {
+                              return AppLocalizations.of(
+                                context,
+                              )!.plaese_enter_event_title;
+                            }
+                            return null;
+                          },
+                          prefixIcon: Image.asset(
+                            AppAssets.editIcon,
+                            color: Theme.of(context).hintColor,
+                          ),
+                          hintText: AppLocalizations.of(context)!.event_title,
+                          colorBorderSide: Theme.of(context).cardColor,
+                        ),
+                        SizedBox(height: height * 0.01),
+                        Text(
+                          AppLocalizations.of(context)!.description,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        SizedBox(height: height * 0.005),
+                        CustomTextFormFeild(
+                          controller: descriptionController,
+                          validator: (text) {
+                            if (text == null || text.trim().isEmpty) {
+                              return AppLocalizations.of(
+                                context,
+                              )!.plaese_enter_event_description;
+                            }
+                            return null;
+                          },
+                          hintText:
+                              AppLocalizations.of(context)!.event_description,
+
+                          colorBorderSide: Theme.of(context).cardColor,
+                          maxLine: 4,
+                        ),
+                        SizedBox(height: height * 0.01),
+                        SizedBox(
+                          height: height * 0.04,
+                          child: AddDateOrTimeWidget(
+                            onChooseDateOrTimeClick: chooseDate,
+                            icon: AppAssets.calenderIcon,
+                            dateOrTimeEventText:
+                                AppLocalizations.of(context)!.event_date,
+                            chooseDateOrTime:
+                                formatedDate == ''
+                                    ? DateFormat(
+                                      'dd/MM/yyyy',
+                                    ).format(event.eventDateTime)
+                                    : formatedDate,
+                          ),
+                        ),
+                        Visibility(
+                          visible: showDateError,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!.plaese_enter_date,
+                                style: AppStyle.medium14White.copyWith(
+                                  color: AppColors.redColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // SizedBox(height: height * 0.015,),
+                        SizedBox(
+                          height: height * 0.04,
+                          child: AddDateOrTimeWidget(
+                            onChooseDateOrTimeClick: chooseTime,
+                            icon: AppAssets.clockIcon,
+                            dateOrTimeEventText:
+                                AppLocalizations.of(context)!.event_time,
+                            chooseDateOrTime: formatedTime,
+                          ),
+                        ),
+                        Visibility(
+                          visible: showTimeError,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!.plaese_enter_time,
+                                style: AppStyle.medium14White.copyWith(
+                                  color: AppColors.redColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: height * 0.01),
+                        Text(
+                          AppLocalizations.of(context)!.location,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        SizedBox(height: height * 0.01),
+                        CustomElevatedButton(
+                          onPressed: () {},
+                          hasIcon: true,
+                          backgroundColor: AppColors.transparentColor,
+                          borderColorSide: AppColors.primaryLight,
+                          child: Row(
+                            children: [
+                              Container(
+                                margin: EdgeInsets.symmetric(
+                                  horizontal: width * 0.02,
+                                ),
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: AppColors.primaryLight,
+                                ),
+                                child: Image.asset(AppAssets.locationIcon),
+                              ),
+                              Text(
+                                AppLocalizations.of(
+                                  context,
+                                )!.choose_event_location,
+                                style: AppStyle.medium16Primary,
+                              ),
+                              Spacer(),
+                              Icon(
+                                Icons.arrow_forward_ios,
+                                color: AppColors.primaryLight,
+                              ),
+                              SizedBox(width: width * 0.02),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: height * 0.015),
+                        CustomElevatedButton(
+                          onPressed: () {
+                            updateEvent();
+                          },
+                          text: AppLocalizations.of(context)!.update_event,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
   }
 
   void chooseDate() async {
@@ -302,7 +322,7 @@ class _EditEventState extends State<EditEvent> {
 
     var chooseDate = await showDatePicker(
       context: context,
-      initialDate: event.eventDateTime,
+      initialDate: selectedDate ?? DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 365)),
       builder: (context, child) {
@@ -364,8 +384,14 @@ class _EditEventState extends State<EditEvent> {
     }
   }
 
-  void updateEvent() {
-    setState(() {
+  void updateEvent() async {
+    setState(() async {
+      final eventListProvider = Provider.of<EventListProvider>(
+        context,
+        listen: false,
+      );
+      final selectedKey =
+          eventListProvider.eventCategoryKeys[selectedIndex + 1];
       // showDateError = selectedDate == null;
       // showTimeError = selectedTime == null;
       if (formKey.currentState?.validate() == true) {
@@ -373,26 +399,45 @@ class _EditEventState extends State<EditEvent> {
         Event updatedEvent = Event(
           id: event.id,
           eventImage: selectedEventImage,
-          eventName: selectedEventName,
+          eventName: selectedKey,
           title: titleController.text,
           description: descriptionController.text,
           eventDateTime: selectedDate!,
           eventTime: formatedTime,
+          isFavorite: event.isFavorite,
         );
-        eventListProvider.updateEvent(updatedEvent);
-
-        SnackBarUtils.showSnackBar(
-          context: context,
-          text: 'Event updated succesfully',
-        );
-
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          AppRoutes.homeRouteName,
-          (route) => false,
-        );
+        try {
+          final userProvider = Provider.of<UserProvider>(
+            context,
+            listen: false,
+          );
+          final currentUserId = userProvider.currentUset?.id;
+          if (currentUserId == null) {
+            SnackBarUtils.showSnackBar(
+              context: context,
+              text: 'user not found',
+            );
+            return;
+          }
+          await FirebaseUtils.updateEvent(updatedEvent, currentUserId);
+          eventListProvider.updateEvent(updatedEvent); // update locally
+          SnackBarUtils.showSnackBar(
+            context: context,
+            text: AppLocalizations.of(context)!.event_updated_succesfully,
+          );
+          eventListProvider.getAllEvents(currentUserId);
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            AppRoutes.homeRouteName,
+            (route) => false,
+          );
+        } catch (e) {
+          SnackBarUtils.showSnackBar(
+            context: context,
+            text: 'Error updating event: $e',
+          );
+        }
       }
-      // }
     });
   }
 }

@@ -16,6 +16,7 @@ class AppTheme {
     colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryLight),
     scaffoldBackgroundColor: AppColors.whiteBgColor,
     highlightColor: AppColors.blackColor,
+    hoverColor: AppColors.primaryLight,
     textTheme: TextTheme(
       headlineLarge: AppStyle.bold20Black,
       headlineMedium: AppStyle.medium16Primary,
@@ -63,6 +64,7 @@ class AppTheme {
     highlightColor: AppColors.primaryLight,
     cardColor: AppColors.primaryLight,
     scaffoldBackgroundColor: AppColors.primaryDark,
+    hoverColor: AppColors.whiteColor,
     textTheme: TextTheme(
       headlineLarge: AppStyle.bold20White,
       headlineMedium: AppStyle.medium16White,

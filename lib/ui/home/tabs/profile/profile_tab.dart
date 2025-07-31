@@ -8,8 +8,10 @@ import 'package:event/utils/app_assets.dart';
 import 'package:event/utils/app_colors.dart';
 import 'package:event/utils/app_routes.dart';
 import 'package:event/utils/app_style.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
 class ProfileTab extends StatefulWidget {
@@ -38,7 +40,7 @@ class _ProfileTabState extends State<ProfileTab> {
           padding: EdgeInsets.only(bottom: height * 0.04),
           child: Row(
             children: [
-              Image.asset(AppAssets.profileImage),
+              Image.asset(AppAssets.profileImage,width: width * 0.22,height: height * 0.18,),
               SizedBox(width: width * 0.04),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,14 +49,9 @@ class _ProfileTabState extends State<ProfileTab> {
                     userProvider.currentUset!.name,
                     style: AppStyle.bold24White,
                   ),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Expanded(
-                      child: Text(
-                        userProvider.currentUset!.email,
-                        style: AppStyle.medium16White,
-                      ),
-                    ),
+                  Text(
+                    userProvider.currentUset!.email,
+                    style: AppStyle.medium16White,
                   ),
                 ],
               ),
@@ -146,7 +143,20 @@ class _ProfileTabState extends State<ProfileTab> {
             ),
             Spacer(),
             CustomElevatedButton(
-              onPressed: () {
+              onPressed: () async {
+                final user = FirebaseAuth.instance.currentUser;
+
+                if (user != null) {
+                  for (final info in user.providerData) {
+                    if (info.providerId == 'google.com') {
+                      await GoogleSignIn().signOut();
+                      break;
+                    }
+                  }
+                }
+
+                await FirebaseAuth.instance.signOut();
+
                 Navigator.pushNamedAndRemoveUntil(
                   context,
                   AppRoutes.loginRouteName,

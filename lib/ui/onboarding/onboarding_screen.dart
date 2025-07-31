@@ -1,8 +1,10 @@
+import 'package:event/providers/app_language_provider.dart';
 import 'package:event/utils/app_assets.dart';
 import 'package:event/utils/app_colors.dart';
 import 'package:event/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+import 'package:provider/provider.dart';
 import 'page_1.dart';
 import 'page_2.dart';
 import 'page_3.dart';
@@ -17,11 +19,14 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final introKey = GlobalKey<IntroductionScreenState>();
   int currentPage = 0;
+  
+
 
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
+    var appLanguageProvider = Provider.of<AppLanguageProvider>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).shadowColor,
@@ -56,7 +61,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 
              IconButton(
                   icon: Image.asset(
-                    AppAssets.prevArrow,
+                    appLanguageProvider.isEnglish() ?
+                    AppAssets.prevArrow  
+                    :
+                    AppAssets.forwardArrow,
                     height: height * 0.05,
                     width: width * 0.1,
                     color: currentPage == 0 ? AppColors.transparentColor : null, 
@@ -86,7 +94,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 
               IconButton(
                     icon: Image.asset(
-                      AppAssets.forwardArrow,
+                      appLanguageProvider.isEnglish() ?
+                      AppAssets.forwardArrow 
+                      :
+                      AppAssets.prevArrow,
                       height: height * 0.05,
                     width: width * 0.1,
                     ),

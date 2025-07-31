@@ -20,6 +20,7 @@ class CustomTextFormFeild extends StatelessWidget {
   String? obscureCharacter;
   TextStyle? textStyle;
   int? maxLine;
+  Function(String)? onChange;
    CustomTextFormFeild({
     super.key,
     
@@ -37,7 +38,8 @@ class CustomTextFormFeild extends StatelessWidget {
     this.obscureText = false,
     this.obscureCharacter,
     this.textStyle,
-    this.maxLine
+    this.maxLine,
+    this.onChange
    });
 
   @override
@@ -56,6 +58,7 @@ class CustomTextFormFeild extends StatelessWidget {
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
         
+        
       ),
       cursorColor: cursorColor,
       controller: controller,
@@ -64,6 +67,7 @@ class CustomTextFormFeild extends StatelessWidget {
       obscureText: obscureText,
       obscuringCharacter: obscureCharacter ?? '.',
       maxLines: maxLine ?? 1,
+      onChanged: onChange,
       
       
       

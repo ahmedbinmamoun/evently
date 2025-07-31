@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event/model/event.dart';
+import 'package:event/providers/app_language_provider.dart';
+import 'package:event/providers/app_theme_provider.dart';
 import 'package:event/providers/event_list_provider.dart';
 import 'package:event/providers/user_provider.dart';
 import 'package:event/ui/home/tabs/home_tab/widgets/event_item.dart';
 import 'package:event/ui/home/tabs/home_tab/widgets/event_tab_item.dart';
 import 'package:event/utils/app_assets.dart';
 import 'package:event/utils/app_colors.dart';
-import 'package:event/utils/app_routes.dart';
 import 'package:event/utils/app_style.dart';
-import 'package:event/utils/firebase_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lottie/lottie.dart';
@@ -29,6 +29,8 @@ class _HomeTabState extends State<HomeTab> {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
+    var appLanguageProvider = Provider.of<AppLanguageProvider>(context);
+    var appThemeProvider = Provider.of<AppThemeProvider>(context);
     var eventListProvider = Provider.of<EventListProvider>(context);
     var userProvider = Provider.of<UserProvider>(context);
     eventListProvider.getEventNameList(context);
@@ -60,21 +62,42 @@ class _HomeTabState extends State<HomeTab> {
               ],
             ),
             Spacer(),
-            ImageIcon(
-              AssetImage(AppAssets.themeIcon),
-              color: AppColors.whiteColor,
-            ),
-            Container(
-              margin: EdgeInsets.only(left: width * 0.02),
-              padding: EdgeInsets.symmetric(
-                horizontal: width * 0.02,
-                vertical: height * 0.01,
-              ),
-              decoration: BoxDecoration(
+            InkWell(
+              onTap: (){
+                appThemeProvider.isDarkMode() ?
+              appThemeProvider.changeTheme(ThemeMode.light)
+              :
+              appThemeProvider.changeTheme(ThemeMode.dark);
+              },
+              child: ImageIcon(
+                  appThemeProvider.isDarkMode() ?
+                AssetImage(AppAssets.themeIcon)
+                :
+                AssetImage(AppAssets.lightIcon),
                 color: AppColors.whiteColor,
-                borderRadius: BorderRadius.circular(8),
               ),
-              child: Text('EN', style: AppStyle.bold14Primary),
+            ),
+            SizedBox(width: width * 0.01,),
+            InkWell(
+              onTap: (){
+                appLanguageProvider.isEnglish()
+                              ? appLanguageProvider.changeLanguage('ar')
+                              : appLanguageProvider.changeLanguage('en');
+              },
+              child: Container(
+                margin: EdgeInsets.only(left: width * 0.02),
+                padding: EdgeInsets.symmetric(
+                  horizontal: width * 0.02,
+                  vertical: height * 0.01,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.whiteColor,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  AppLocalizations.of(context)!.en_ar,
+                 style: AppStyle.bold14Primary),
+              ),
             ),
           ],
         ),
@@ -119,12 +142,15 @@ class _HomeTabState extends State<HomeTab> {
                           unSelectedTextStyle:
                               Theme.of(context).textTheme.headlineSmall!,
                           selectedColor: Theme.of(context).focusColor,
+                          selectedIconColor: Theme.of(context).hoverColor,
                           isSelected:
                               eventListProvider.selectedIndex ==
                               eventListProvider.eventNameList.indexOf(
                                 eventName,
                               ),
                           eventName: eventName,
+                          eventIcon: eventListProvider.eventIcons[eventListProvider.eventNameList.indexOf(
+                                eventName)],
                         );
                       }).toList(),
                 ),
@@ -148,7 +174,9 @@ class _HomeTabState extends State<HomeTab> {
                             Lottie.asset(Animations.loadingAnimation),
                             Text(
                               '${AppLocalizations.of(context)!.no_event}..',
-                              style: AppStyle.bold16Black,
+                              style: AppStyle.bold16Black.copyWith(
+                                color: Theme.of(context).canvasColor
+                              ),
                             ),
                           ],
                         ),

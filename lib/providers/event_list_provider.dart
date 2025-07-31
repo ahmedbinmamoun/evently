@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event/model/event.dart';
+import 'package:event/utils/app_assets.dart';
 import 'package:event/utils/app_colors.dart';
 import 'package:event/utils/firebase_utils.dart';
 import 'package:event/utils/toastUtils.dart';
@@ -9,23 +10,66 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class EventListProvider extends ChangeNotifier {
   List<Event> eventsList = [];
   List<Event> filterEventsList = [];
-  List<String> eventNameList = [];
   List<Event> favoriteEventList = [];
   int selectedIndex = 0;
+  Map<String,String> eventCategoryMap = {
+    'all' : 'All',
+    'sports' : 'Sports',
+    'birthday' : 'Birthday',
+    'meeting' : 'Meeting',
+    'gaming' : 'Gaming',
+    'workshop' : 'Workshop',
+    'book_club' : 'Book Club',
+    'exhibition' : 'Exhibition',
+    'holiday' : 'Holiday',
+    'eating' : 'Eating',
+  };
+  List<String> eventCategoryKeys = [];
+  List<String> eventNameList = [];
+  List<Event> searchedFavoriteList = [];
+
+  List<String> eventIcons = [
+    AppAssets.allIcon,
+    AppAssets.sportIcon,
+    AppAssets.birthdayIcon,
+    AppAssets.meetingIcon,
+    AppAssets.gamingIcon,
+    AppAssets.workshopIcon,
+    AppAssets.bookClubIcon,
+    AppAssets.exhibitionIcon,
+    AppAssets.holidayIcon,
+    AppAssets.eatingIcon,
+    
+  ];
 
   List<String> getEventNameList(BuildContext context) {
-    return eventNameList = [
-      AppLocalizations.of(context)!.all,
-      AppLocalizations.of(context)!.sports,
-      AppLocalizations.of(context)!.birthday,
-      AppLocalizations.of(context)!.meeting,
-      AppLocalizations.of(context)!.gaming,
-      AppLocalizations.of(context)!.workshop,
-      AppLocalizations.of(context)!.book_club,
-      AppLocalizations.of(context)!.exhibition,
-      AppLocalizations.of(context)!.holiday,
-      AppLocalizations.of(context)!.eating,
-    ];
+    eventCategoryKeys = eventCategoryMap.keys.toList();
+    return eventNameList = eventCategoryKeys.map((key) {
+      switch (key) {
+        case 'all':
+          return AppLocalizations.of(context)!.all;
+        case 'sports':
+          return AppLocalizations.of(context)!.sports;
+        case 'birthday':
+          return AppLocalizations.of(context)!.birthday;
+        case 'meeting':
+         return AppLocalizations.of(context)!.meeting;
+        case 'gaming':
+          return AppLocalizations.of(context)!.gaming;
+        case 'workshop':
+          return AppLocalizations.of(context)!.workshop;
+        case 'book_club':
+          return AppLocalizations.of(context)!.book_club;
+        case 'exhibition':
+          return AppLocalizations.of(context)!.exhibition;
+        case 'holiday':
+          return AppLocalizations.of(context)!.holiday;
+        case 'eating':
+        return AppLocalizations.of(context)!.eating;
+        default:
+          return '';
+      }
+    }).toList();
   }
 
   void getAllEvents(String uId) async {
@@ -53,15 +97,16 @@ class EventListProvider extends ChangeNotifier {
   // }
 
   void getFilterEventsFromFireStore(String uId) async {
-    var querySnapshot =
-        await FirebaseUtils.getEventCollection(uId)
-            .orderBy('event_date_time')
-            .where('event_name', isEqualTo: eventNameList[selectedIndex])
-            .get();
-    filterEventsList =
-        querySnapshot.docs.map((doc) {
-          return doc.data();
-        }).toList();
+    final selectedKey = eventCategoryKeys[selectedIndex];
+    if (selectedKey == 'all') {
+      getAllEvents(uId);
+      return;
+    }
+    var querySnapshot = await FirebaseUtils.getEventCollection(uId)
+        .orderBy('event_date_time')
+        .where('event_name', isEqualTo: selectedKey)
+        .get();
+    filterEventsList = querySnapshot.docs.map((doc) => doc.data()).toList();
     notifyListeners();
   }
 
@@ -82,6 +127,7 @@ class EventListProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+
 
   void updateEvent(Event updatedEvent) {
     int index = eventsList.indexWhere((e) => e.id == updatedEvent.id);
@@ -115,8 +161,23 @@ class EventListProvider extends ChangeNotifier {
         querySnapshot.docs.map((doc) {
           return doc.data();
         }).toList();
+        searchedFavoriteList = favoriteEventList;
     notifyListeners();
   }
+
+
+  void searchFavoriteEvents(String query) {
+  if (query.isEmpty) {
+    searchedFavoriteList = favoriteEventList;
+  } else {
+    searchedFavoriteList = favoriteEventList.where((event) {
+      final lowerQuery = query.toLowerCase();
+      return event.title.toLowerCase().contains(lowerQuery) ||
+             event.description.toLowerCase().contains(lowerQuery);
+    }).toList();
+  }
+  notifyListeners();
+}
 
   void changeSelectedIndex(int newSelectedIndex, String uId) {
     selectedIndex = newSelectedIndex;

@@ -36,7 +36,10 @@ class _EventDetailsState extends State<EventDetails> {
     var eventListProvider = Provider.of<EventListProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Event Details', style: AppStyle.medium20Primary),
+        title: Text(
+          AppLocalizations.of(context)!.event_details,
+          style: AppStyle.medium20Primary,
+        ),
         centerTitle: true,
         actions: [
           InkWell(
@@ -66,8 +69,11 @@ class _EventDetailsState extends State<EventDetails> {
               );
               DialogUtils.showMessage(
                 context: context,
-                message: 'Are you sure',
-                posActionsName: 'Yes',
+                message:
+                    AppLocalizations.of(
+                      context,
+                    )!.are_you_sure_you_want_to_delete,
+                posActionsName: AppLocalizations.of(context)!.yes,
                 posAction: () async {
                   await FirebaseUtils.getEventCollection(
                     userProvider.currentUset!.id,
@@ -79,8 +85,8 @@ class _EventDetailsState extends State<EventDetails> {
                     (route) => false,
                   );
                 },
-                negActionsName: 'No',
-                title: 'Delete',
+                negActionsName: AppLocalizations.of(context)!.no,
+                title: AppLocalizations.of(context)!.delete,
               );
             },
             child: Image.asset(AppAssets.deleteIcon),
@@ -176,7 +182,10 @@ class _EventDetailsState extends State<EventDetails> {
                 child: Image.asset(AppAssets.locationImage, fit: BoxFit.fill),
               ),
               SizedBox(height: height * 0.015),
-              Text('Description', style: AppStyle.medium16Black),
+              Text(
+                AppLocalizations.of(context)!.description,
+                style: AppStyle.medium16Black,
+              ),
               SizedBox(height: height * 0.01),
               Text(event.description, style: AppStyle.medium16Black),
               SizedBox(height: height * 0.04),

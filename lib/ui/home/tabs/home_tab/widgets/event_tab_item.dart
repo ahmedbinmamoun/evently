@@ -4,14 +4,18 @@ import 'package:flutter/material.dart';
 class EventTabItem extends StatelessWidget {
   bool isSelected;
   String eventName;   
+  String eventIcon;   
   Color selectedColor;
+  Color selectedIconColor;
   TextStyle selectedTextStyle;
   TextStyle unSelectedTextStyle;
   Color? borderSideColor;
    EventTabItem({
     required this.isSelected,
     required this.eventName,
+    required this.eventIcon,
     required this.selectedColor,
+     this.selectedIconColor = AppColors.primaryLight,
     required this.selectedTextStyle,
     required this.unSelectedTextStyle,
     this.borderSideColor,
@@ -38,8 +42,17 @@ class EventTabItem extends StatelessWidget {
         ),
         color: isSelected ? selectedColor : AppColors.transparentColor,
       ),
-      child: Text(eventName,
-      style: isSelected ? selectedTextStyle : unSelectedTextStyle,
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 2),
+            child: Image.asset(eventIcon,height: height * 0.03,color: isSelected ? selectedIconColor : selectedColor,),
+          ),
+          SizedBox(width: width * 0.01,),
+          Text(eventName,
+          style: isSelected ? selectedTextStyle : unSelectedTextStyle,
+          ),
+        ],
       ),
     );
   }

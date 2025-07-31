@@ -30,7 +30,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   GoogleSignInAccount? _user;
   TextEditingController emailController = TextEditingController(
-    text: 'ahmedbinmamoun@gmail.com',
+    text: 'ahmed@gmail.com',
   );
 
   TextEditingController passwordController = TextEditingController(
@@ -196,7 +196,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     SizedBox(height: height * 0.02),
                     CustomElevatedButton(
-                      onPressed: signInWithGoogle,
+                      onPressed: (){
+                        signUpWithGoogle(context);
+                      },
                       backgroundColor: AppColors.transparentColor,
                       borderColorSide: AppColors.primaryLight,
                       hasIcon: true,
@@ -265,9 +267,9 @@ class _LoginScreenState extends State<LoginScreen> {
         DialogUtils.hideLoading(context: context);
         DialogUtils.showMessage(
           context: context,
-          message: 'login Succesfully.',
-          title: 'Succesfully',
-          posActionsName: 'OK',
+          message: AppLocalizations.of(context)!.login_succesfully,
+          title: AppLocalizations.of(context)!.succesfully,
+          posActionsName: AppLocalizations.of(context)!.ok,
           posAction: () {
             Navigator.pushReplacementNamed(context, AppRoutes.homeRouteName);
           },
@@ -277,17 +279,17 @@ class _LoginScreenState extends State<LoginScreen> {
           DialogUtils.hideLoading(context: context);
           DialogUtils.showMessage(
             context: context,
-            message: 'Email or password is wrong',
-            title: 'Error',
-            posActionsName: 'OK',
+            message: AppLocalizations.of(context)!.email_or_password_is_wrong,
+            title: AppLocalizations.of(context)!.error,
+            posActionsName: AppLocalizations.of(context)!.ok,
           );
         } else if (e.code == 'network-request-failed') {
           DialogUtils.hideLoading(context: context);
           DialogUtils.showMessage(
             context: context,
-            message: 'No network',
-            title: 'Error',
-            posActionsName: 'OK',
+            message: AppLocalizations.of(context)!.network_error,
+            title: AppLocalizations.of(context)!.error,
+            posActionsName: AppLocalizations.of(context)!.ok,
           );
         }
       } catch (e) {
@@ -295,102 +297,79 @@ class _LoginScreenState extends State<LoginScreen> {
         DialogUtils.showMessage(
           context: context,
           message: e.toString(),
-          title: 'Error',
-          posActionsName: 'OK',
+          title: AppLocalizations.of(context)!.error,
+          posActionsName: AppLocalizations.of(context)!.ok,
         );
       }
     }
   }
 
-  Future<UserCredential?> signInWithGoogle() async {
-    try {
-      // 1. Clear any existing sessions
-      await GoogleSignIn.instance.disconnect();
-      await GoogleSignIn.instance.signOut();
+ 
 
-      // 2. Initialize with platform awareness
-      await GoogleSignIn.instance.initialize(
-        serverClientId:
-            Platform.isAndroid
-                ? '481598051103-8heec3cikfb9cle1c5nlpttmbg577qdr.apps.googleusercontent.com'
-                : 'IOS_CLIENT_ID.apps.googleusercontent.com',
+
+
+Future<void> signUpWithGoogle(BuildContext context) async {
+  DialogUtils.showDialgLoding(context: context);
+
+  try {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    if (googleUser == null) {
+      DialogUtils.hideLoading(context: context);
+      return;
+    }
+
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+    final firebaseUser = userCredential.user;
+
+    if (firebaseUser == null) {
+      DialogUtils.hideLoading(context: context);
+      return;
+    }
+
+    var user = await FirebaseUtils.readDataFromFireStore(firebaseUser.uid);
+
+    if (user == null) {
+      user = MyUser(
+        id: firebaseUser.uid,
+        name: firebaseUser.displayName ?? 'User',
+        email: firebaseUser.email ?? '',
       );
-
-      // 3. Start auth flow with MIUI workarounds
-      final googleUser = await _runWithMiuiWorkaround(() async {
-        return await GoogleSignIn.instance.authenticate();
-      });
-
-      if (googleUser == null) {
-        debugPrint('User cancelled flow');
-        return null;
-      }
-
-      // 4. Get auth tokens with retry
-      final googleAuth = await _retryGoogleAuth(googleUser);
-      if (googleAuth.idToken == null) throw Exception('Null ID token');
-
-      // 5. Firebase integration
-      return await FirebaseAuth.instance.signInWithCredential(
-        GoogleAuthProvider.credential(
-          idToken: googleAuth.idToken,
-          accessToken: googleAuth.idToken,
-        ),
-      );
-    } on PlatformException catch (e) {
-      if (e.code == '12500' || e.code == '12501') {}
-      rethrow;
+      await FirebaseUtils.addUserToFireStore(user);
     }
-  }
 
-  // MIUI-specific workarounds
-  Future<T?> _runWithMiuiWorkaround<T>(Future<T?> Function() fn) async {
-    try {
-      // First attempt
-      return await fn();
-    } on PlatformException catch (e) {
-      if (!_isMiuiError(e)) rethrow;
+    var userProvider = Provider.of<UserProvider>(context, listen: false);
+    userProvider.updateUser(user);
 
-      // Apply MIUI fixes
-      await _configureMiuiSettings();
-      await Future.delayed(const Duration(seconds: 1));
+    var eventListProvider = Provider.of<EventListProvider>(context, listen: false);
+    eventListProvider.changeSelectedIndex(0, user.id);
+    eventListProvider.getAllFavoriteEventFromFirsStore(user.id);
 
-      // Second attempt
-      return await fn();
-    }
-  }
+    DialogUtils.hideLoading(context: context);
 
-  bool _isMiuiError(PlatformException e) {
-    return e.code == '12500' ||
-        e.code == '12501' ||
-        e.message?.contains('canceled') == true;
-  }
-
-  Future<void> _configureMiuiSettings() async {
-    if (!Platform.isAndroid) return;
-
-    try {
-      const channel = MethodChannel('miui_fix');
-      await channel.invokeMethod('disableBatteryOptimization');
-      await channel.invokeMethod('setAutostart');
-    } catch (e) {
-      debugPrint('MIUI config failed: $e');
-    }
-  }
-
-  Future<GoogleSignInAuthentication> _retryGoogleAuth(
-    GoogleSignInAccount user,
-  ) async {
-    for (int i = 0; i < 3; i++) {
-      try {
-        return await user.authentication;
-      } on PlatformException catch (e) {
-        if (i == 2 || !_isMiuiError(e)) rethrow;
-        await Future.delayed(Duration(seconds: 1 * (i + 1)));
-      }
-    }
-    throw Exception('Auth retries exhausted');
+    DialogUtils.showMessage(
+      context: context,
+      message: AppLocalizations.of(context)!.login_succesfully,
+      title: AppLocalizations.of(context)!.succesfully,
+      posActionsName: AppLocalizations.of(context)!.ok,
+      posAction: () {
+        Navigator.pushReplacementNamed(context, AppRoutes.homeRouteName);
+      },
+    );
+  } catch (e) {
+    DialogUtils.hideLoading(context: context);
+    DialogUtils.showMessage(
+      context: context,
+      message: AppLocalizations.of(context)!.error,
+      title: AppLocalizations.of(context)!.error,
+      posActionsName: AppLocalizations.of(context)!.ok,
+    );
   }
 }
-
-class GoogleSignInCancelledException implements Exception {}
+}
