@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:event/utils/language_storage.dart'; // update path
+import 'package:event/utils/language_storage.dart'; 
 
 class AppLanguageProvider with ChangeNotifier {
   String _appLanguage = 'en';

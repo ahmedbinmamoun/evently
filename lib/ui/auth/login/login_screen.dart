@@ -351,6 +351,8 @@ Future<void> signUpWithGoogle(BuildContext context) async {
     eventListProvider.changeSelectedIndex(0, user.id);
     eventListProvider.getAllFavoriteEventFromFirsStore(user.id);
 
+    
+
     DialogUtils.hideLoading(context: context);
 
     DialogUtils.showMessage(
