@@ -4,6 +4,8 @@ import 'package:event/model/my_user.dart';
 import 'package:event/providers/app_language_provider.dart';
 import 'package:event/providers/event_list_provider.dart';
 import 'package:event/providers/user_provider.dart';
+import 'package:event/ui/auth/login/login_navigator.dart';
+import 'package:event/ui/auth/login/login_view_model.dart';
 import 'package:event/ui/home/widgets/custom_elevated_button.dart';
 import 'package:event/ui/home/widgets/custom_text_form_feild.dart';
 import 'package:event/ui/onboarding/widgets/image_toggle_switch.dart';
@@ -27,17 +29,20 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen> implements LoginNavigator{
   GoogleSignInAccount? _user;
-  TextEditingController emailController = TextEditingController(
-    text: 'ahmed@gmail.com',
-  );
+  
 
-  TextEditingController passwordController = TextEditingController(
-    text: '123456',
-  );
+  LoginViewModel viewModel = LoginViewModel();
 
-  var formKey = GlobalKey<FormState>();
+  
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    viewModel.navigator = this;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,11 +66,11 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: height * 0.02),
               Form(
-                key: formKey,
+                key: viewModel.formKey,
                 child: Column(
                   children: [
                     CustomTextFormFeild(
-                      controller: emailController,
+                      controller: viewModel.emailController,
                       validator: (text) {
                         if (text == null || text.isEmpty) {
                           return AppLocalizations.of(
@@ -92,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     SizedBox(height: height * 0.02),
                     CustomTextFormFeild(
-                      controller: passwordController,
+                      controller: viewModel.passwordController,
                       obscureText: true,
                       validator: (text) {
                         if (text == null || text.isEmpty) {
@@ -142,7 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(height: height * 0.01),
                     CustomElevatedButton(
                       onPressed: () {
-                        login();
+                        viewModel.login(context);
                       },
                       text: AppLocalizations.of(context)!.login,
                     ),
@@ -238,75 +243,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void login() async {
-    if (formKey.currentState?.validate() == true) {
-      DialogUtils.showDialgLoding(context: context);
-      try {
-        final credential = await FirebaseAuth.instance
-            .signInWithEmailAndPassword(
-              email: emailController.text,
-              password: passwordController.text,
-            );
-        var user = await FirebaseUtils.readDataFromFireStore(
-          credential.user?.uid ?? '',
-        );
-        if (user == null) {
-          return;
-        }
-        var usetProvider = Provider.of<UserProvider>(context, listen: false);
-        usetProvider.updateUser(user);
-
-        var eventListProvider = Provider.of<EventListProvider>(
-          context,
-          listen: false,
-        );
-        eventListProvider.changeSelectedIndex(0, usetProvider.currentUset!.id);
-        eventListProvider.getAllFavoriteEventFromFirsStore(
-          usetProvider.currentUset!.id,
-        );
-        DialogUtils.hideLoading(context: context);
-        DialogUtils.showMessage(
-          context: context,
-          message: AppLocalizations.of(context)!.login_succesfully,
-          title: AppLocalizations.of(context)!.succesfully,
-          posActionsName: AppLocalizations.of(context)!.ok,
-          posAction: () {
-            Navigator.pushReplacementNamed(context, AppRoutes.homeRouteName);
-          },
-        );
-      } on FirebaseAuthException catch (e) {
-        if (e.code == 'invalid-credential') {
-          DialogUtils.hideLoading(context: context);
-          DialogUtils.showMessage(
-            context: context,
-            message: AppLocalizations.of(context)!.email_or_password_is_wrong,
-            title: AppLocalizations.of(context)!.error,
-            posActionsName: AppLocalizations.of(context)!.ok,
-          );
-        } else if (e.code == 'network-request-failed') {
-          DialogUtils.hideLoading(context: context);
-          DialogUtils.showMessage(
-            context: context,
-            message: AppLocalizations.of(context)!.network_error,
-            title: AppLocalizations.of(context)!.error,
-            posActionsName: AppLocalizations.of(context)!.ok,
-          );
-        }
-      } catch (e) {
-        DialogUtils.hideLoading(context: context);
-        DialogUtils.showMessage(
-          context: context,
-          message: e.toString(),
-          title: AppLocalizations.of(context)!.error,
-          posActionsName: AppLocalizations.of(context)!.ok,
-        );
-      }
-    }
-  }
-
- 
-
-
 
 Future<void> signUpWithGoogle(BuildContext context) async {
   DialogUtils.showDialgLoding(context: context);
@@ -374,4 +310,28 @@ Future<void> signUpWithGoogle(BuildContext context) async {
     );
   }
 }
+
+  @override
+  void hideLoading() {
+    // TODO: implement hideLoading
+    DialogUtils.hideLoading(context: context);
+  }
+
+  @override
+  void showLoading() {
+    // TODO: implement showLoading
+    DialogUtils.showDialgLoding(context: context);
+  }
+  
+  @override
+  void showMessage({required String message, String? posActionsName, Function? posAction, String? negActionsName, Function? negAction, String? title}) {
+    // TODO: implement showMessage
+    DialogUtils.showMessage(context: context, message: message,posActionsName: posActionsName,posAction: posAction);
+  }
+  
+  
+  
+
+
+  
 }
